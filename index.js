@@ -11,11 +11,6 @@ Dependencies: axios, msal-node, fs, readline, node-cache
 ======================================================================
 */
 
-// Global variables (change these in the .env file!)
-var clientSecret = process.env.CLIENTSECRET
-var tenantID = process.env.TENANTID 
-var clientID = process.env.CLIENTID 
-
 // Declare libaries
 require('dotenv').config();
 var fs = require('fs');
@@ -142,7 +137,6 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
 
 async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray, tenantID) {
     let array = []
-    let errorArray = []
 
     // Log progress
     const progress = ((0) / groupIDarray.length) * 100; // Calculate progress percentage
@@ -160,8 +154,6 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
 
                 if (Array.isArray(serviceResult)) {
                     array.push(...serviceResult);
-                } else {
-                    errorArray.push(item.file)
                 }
             }
         
@@ -186,14 +178,11 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     );
 
     // remove duplicated from error array
-    const uniqueErrorArray = errorArray.filter((value, index, self) =>
-        index === self.findIndex((t) => (
-            t === value
-        ))
-    );
-    
+    const uniqueErrorArray = [...new Set(global.forbiddenErrors)]
+
     if (uniqueErrorArray.length > 0) {
-        console.log(`\n ERROR for following ${uniqueErrorArray.length} services: ${uniqueErrorArray.toString()}. Likely because the required permissions are not assigned.`)
+        console.log(`\n ERROR: you don't have permissions to read below ${uniqueErrorArray.length} API endpoints:`)
+        console.log(uniqueErrorArray)
     }
     
     formatOutput(array)
@@ -220,12 +209,4 @@ async function formatOutput(arr) {
     process.exit() // exit script
 }
 
-async function getAppCredentials() {
-    return {
-        clientSecret: clientSecret,
-        tenantID: tenantID,
-        clientID: clientID
-    }
-}
-
-module.exports = { getAppCredentials }
+module.exports = { }

@@ -5,10 +5,11 @@ const NodeCache = require( "node-cache" );
 const myCache = new NodeCache();
 const identity = require('@azure/identity')
 
+global.forbiddenErrors = []
 
 async function getToken() {
     // If the client secret is filled in, then get token from the Azure App Registration
-    if (global.clientSecret && global.clientSecret.length < 0) {
+    if (global.clientSecret && global.clientSecret.length > 0) {
         var msalConfig = {
             auth: {
                 clientId: clientID,
@@ -44,7 +45,7 @@ async function getToken() {
 
 async function getTokenAzure() {
     // If the client secret is filled in, then get token from the Azure App Registration
-    if (global.clientSecret && global.clientSecret.length < 0) {
+    if (global.clientSecret && global.clientSecret.length > 0) {
         var msalConfig2 = {
             auth: {
                 clientId: clientID,
@@ -84,8 +85,6 @@ async function getAllWithNextLink(accessToken, urlParameter) {
             arr.push(...data)
         } while(url)
     } catch (error) {
-        // if you have errors, uncomment below line and run again
-        // console.log(`${error.response.status} - ${error.response.statusText}`)
     }
 
     return arr
@@ -108,8 +107,9 @@ async function callApi(endpoint, accessToken) {
         if (myCache.get(endpoint) == undefined) myCache.set(endpoint, response.data, 120); // save to cache for 120 seconds
         return response.data;
     } catch (error) {
-        // if you have errors, uncomment below line and run again
-        // console.log(`${error.response.status} - ${error.response.statusText}`)
+        if (error.response.status == 403) {
+            global.forbiddenErrors.push(error.response?.config?.url)
+        }
     }
 };
 
