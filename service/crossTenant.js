@@ -1,0 +1,1 @@
+// https://graph.microsoft.com/beta/policies/crossTenantAccessPolicy/default
