@@ -51,7 +51,7 @@ Group Analyzer lists group memberships for following services:
 
 
 ```sh
-git clone https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer.
+git clone https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer.git
 cd ./Microsoft-Cloud-Group-Analyzer
 npm install
 ```
@@ -59,7 +59,7 @@ npm install
 ## Usage
 
 There are 2 ways to authenticate:
-- with an admin account (recommended, simple) (run 'az login' in your terminal)
+- with an admin account (run 'az login' in your terminal. You might not have all required permissions assigned!)
 - with an Azure App registration (create an Azure App Registration with all .Read.All permissions and fill credentials in the .env file)
 
 ```
@@ -85,13 +85,16 @@ Now paste a group ID, a user ID or the word 'all'.
 
 ## Roadmap
 - [x] Caching (local)
-- [x] User authentication
-- [ ] Azure App Registration certificate authentication
+- [ ] Authentication methods
+  - [x] User authentication
+  - [ ] Azure App Registration certificate authentication
+  - [ ] Managed Identity
 - [ ] Webinterface
 - [ ] Export
   - [ ] CSV
   - [ ] JSON
 - [ ] Ennumerate the actual setting, not assignment only
+- [ ] Cronjob / call from existing service
 
 ## Issues?
 
