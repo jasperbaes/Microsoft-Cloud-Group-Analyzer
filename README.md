@@ -36,6 +36,7 @@ Group Analyzer lists group memberships for following services:
 | ✅         |               Microsoft 365 Teams                |                                                                                                    |
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
 | ✅         |               Azure Subscriptions                |                                                                                                    |
+| ❌         |                  Access Package                  |                                                                                        Coming soon |
 | ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon (Only for Microsoft Authenticator app) |
 | ❌         |           Entra ID Administrative Unit           |                                                                                        Coming soon |
 | ❌         |              Entra ID Cross Tenant               |                                                                                        Coming soon |
@@ -58,9 +59,7 @@ npm install
 
 ## Usage
 
-There are 2 ways to authenticate:
-- with an admin account (run 'az login' in your terminal. You might not have all required permissions assigned!)
-- with an Azure App registration (create an Azure App Registration with all .Read.All permissions and fill credentials in the .env file)
+Create the file '.env' in the root of the folder and fill in below fields (guide above):
 
 ```
 CLIENTSECRET=<app secret>
@@ -71,8 +70,9 @@ CLIENTID=<app registration ID>
 To run the script:
 
 ```sh
-az login    <-- only if you use admin account authentication
 node index.js
+// or with userID/groupID/'all' as parameter
+node index.js xxxx-xxxx-xxxx-xxxx
 ```
 
 Now paste a group ID, a user ID or the word 'all'.
@@ -83,18 +83,14 @@ Now paste a group ID, a user ID or the word 'all'.
  | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope |
  | 'all'             |                 all                  |              This option will take all Entra ID groups in scope |
 
-## Roadmap
-- [x] Caching (local)
-- [ ] Authentication methods
-  - [x] User authentication
-  - [ ] Azure App Registration certificate authentication
-  - [ ] Managed Identity
-- [ ] Webinterface
-- [ ] Export
-  - [ ] CSV
-  - [ ] JSON
-- [ ] Ennumerate the actual setting, not assignment only
-- [ ] Cronjob / call from existing service
+## Release history
+
+Release version numbers: YEAR-WEEK-REV
+
+- 2023.05
+  - temporary removed documentation for user login. App authentication recommended.
+  - improved error reporting
+  - improved documentation
 
 ## Issues?
 

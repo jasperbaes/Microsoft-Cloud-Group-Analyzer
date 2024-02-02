@@ -38,7 +38,7 @@ let scope = [
     { file: 'azureResource', bgColor: '\x1b[41m', enabled: true}
 ]
 
-const fgColor = {
+global.fgColor = {
     FgRed: "\x1b[31m",
     FgGreen: "\x1b[32m",
     FgYellow: "\x1b[33m",
@@ -48,10 +48,11 @@ const fgColor = {
     FgGray: "\x1b[90m",
 }
 
-const colorReset = "\x1b[0m"
+global.colorReset = "\x1b[0m"
 
 async function init(input) {
-    console.log(`\n${fgColor.FgCyan}%s${colorReset}`, ' ## GROUP ANALYZER ##\n');
+    console.log(`\n${fgColor.FgCyan}%s${colorReset}`, ' ## MICROSOFT CLOUD GROUP ANALYZER ##');
+    console.log(` ${fgColor.FgGray}- https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
     
     // set global variables
     global.tenantID = process.env.TENANTID
@@ -61,14 +62,14 @@ async function init(input) {
     let token = await helper.getToken() // get access token from Microsoft Graph API
     let tokenAzure = await helper.getTokenAzure() // get access token from Azure Service Management API
     
+    global.scriptParameter = process.argv.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
 
-    // if this function parameter 'input' is not provided, prompt the user
-    if (token && input == undefined) {
+    if (token && input == undefined && scriptParameter.length <= 0) { // if this function parameter 'input' is not provided, prompt the user
         getInput(token?.accessToken, tokenAzure?.accessToken, tenantID)
-        // getInput(token?.accessToken, null, tenantID)
-    } else if (token && input) {
+    } else if (token && input) { // if this function parameter 'input' is provided, continue
         handleInput(token?.accessToken, tokenAzure?.accessToken, input, tenantID)
-        // handleInput(token?.accessToken, null, input, tenantID)
+    } else if (token && scriptParameter.length > 0) { // if this script parameter is provided, continue with the first script parameter
+        handleInput(token?.accessToken, tokenAzure?.accessToken, scriptParameter.slice(0, 1), tenantID)
     }
 }
 
@@ -102,8 +103,7 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
         groupID = groups.map(group => group.id)
     }
 
-
-    console.log(`\n Entra ID Groups in scope:`)
+    console.log(`\n Entra ID Groups in scope of this scan:`)
     groupsInScope = []
 
     // Loop over all groupIDs in scope of the scan
@@ -112,7 +112,7 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
 
         // exit if the user input is invalid (not a group ID and not a user ID)
         if (groupObject == undefined && isUser == undefined) {
-            console.log(`\n ERROR: No user/group found for this ID. Exiting.`)
+            console.log(`\n ERROR: No user/group found for ID '${group}'. Make sure the ID is correct and you have the correct permissions assigned. Exiting.`)
             process.exit()
         } else if (groupObject != undefined) { 
             // add each group to the scope of the scan
@@ -181,7 +181,7 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     const uniqueErrorArray = [...new Set(global.forbiddenErrors)]
 
     if (uniqueErrorArray.length > 0) {
-        console.log(`\n ERROR: you don't have permissions to read below ${uniqueErrorArray.length} API endpoints:`)
+        console.log(`\n ${uniqueErrorArray.length} ERROR(S):`)
         console.log(uniqueErrorArray)
     }
     

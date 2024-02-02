@@ -10,6 +10,8 @@ global.forbiddenErrors = []
 async function getToken() {
     // If the client secret is filled in, then get token from the Azure App Registration
     if (global.clientSecret && global.clientSecret.length > 0) {
+        console.log(` ${fgColor.FgGray}- authenticated with app registration${colorReset}`)
+
         var msalConfig = {
             auth: {
                 clientId: clientID,
@@ -28,16 +30,33 @@ async function getToken() {
             const cca = new msal.ConfidentialClientApplication(msalConfig);
             return await cca.acquireTokenByClientCredential(tokenRequest);
         } catch (error) {
-            console.error(' ERROR: error while retrieving access token. Please check the script variables and permissions!\n\n', error)
+            console.error(' ERROR: error while retrieving access token from app registration. Please check the script variables and permissions!\n\n', error)
             process.exit()
         }
     } else {  // else get the token from the logged in user
         try {
             const credential = new identity.DefaultAzureCredential()
-            let token = await credential.getToken('https://graph.microsoft.com/.default')
+            let token
+            
+            try {
+                token = await credential.getToken('https://graph.microsoft.com/.default')    
+            } catch (error) {
+                console.error(`\n ERROR: seems like you're not logged in. Exiting.\n`)
+                process.exit()
+            }
+            
+            let user = await callApi(`https://graph.microsoft.com/v1.0/me`, token.token) // fetch logged in user
+
+            if (user == undefined) { // if user not found or no permission, then exit
+                console.error('\n ERROR: error while retrieving logged in session user. Exiting.\n')
+                process.exit()
+            }
+
+            console.log(` ${fgColor.FgGray}- authenticated with ${user?.userPrincipalName}${colorReset}`)
+
             return {accessToken: token.token}
         } catch (error) {
-            console.error(' ERROR: error while retrieving access token from logged in session user. Please check the script variables and permissions!\n\n', error)
+            console.error(' ERROR: error while retrieving access token from logged in session user. Please check the user and permissions!\n\n', error)
             process.exit()
         }
     }
@@ -108,7 +127,9 @@ async function callApi(endpoint, accessToken) {
         return response.data;
     } catch (error) {
         if (error.response.status == 403) {
-            global.forbiddenErrors.push(error.response?.config?.url)
+            // console.log(error.response.status, error.response?.config?.url)
+            // process.exit()
+            global.forbiddenErrors.push(`${error?.response?.status} ${error?.response?.statusText} for '${error?.response?.config?.url}'`)
         }
     }
 };
