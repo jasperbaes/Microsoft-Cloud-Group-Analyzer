@@ -87,10 +87,10 @@ Now paste a group ID, a user ID or the word 'all'.
 
 Release version numbers: YEAR-WEEK-REV
 
-- 2023.05
-  - temporary removed documentation for user login. App authentication recommended.
+- 2024.05
+  - temporary removed documentation for user login. App authentication recommended for now.
   - improved error reporting
-  - improved documentation
+  - improved documentation and setup guide
 
 ## Issues?
 
