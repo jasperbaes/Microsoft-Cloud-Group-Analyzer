@@ -1,7 +1,7 @@
 const helper = require('../helper');
 
 async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID) {
-    let result = await helper.getAllWithNextLink(accessToken, `/beta/deviceManagement/windowsAutopilotDeploymentProfiles?$expand=assignments`)
+    let result = await helper.getAllWithNextLink(accessToken, `/beta/deviceManagement/windowsAutopilotDeploymentProfiles?$expand=assignments&$select=id,assignments,displayName`)
 
     if (result == undefined) {
         return null
@@ -12,6 +12,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         .map(res => ({
             "file": 'windowsAutopilotDeploymentProfile',
             "groupID": groupID,
+            "groupName": groupName,
             "service": "Intune Windows Autopilot Deployment Profile",
             "resourceID": res.id,
             "name": res.displayName,

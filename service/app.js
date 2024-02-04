@@ -1,7 +1,7 @@
 const helper = require('../helper');
 
 async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID) {
-    let result = await helper.getAllWithNextLink(accessToken, `/beta/groups/${groupID}/appRoleAssignments`)
+    let result = await helper.getAllWithNextLink(accessToken, `/beta/groups/${groupID}/appRoleAssignments?$select=id,resourceDisplayName`)
 
     if (result == undefined) {
         return null
@@ -11,6 +11,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         .map(res => ({
             "file": 'app',
             "groupID": groupID,
+            "groupName": groupName,
             "service": "Entra ID Enterprise Application",
             "resourceID": res.id,
             "name": res.resourceDisplayName,

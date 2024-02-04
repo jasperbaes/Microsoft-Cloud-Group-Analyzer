@@ -7,6 +7,23 @@ const identity = require('@azure/identity')
 
 global.forbiddenErrors = []
 
+async function onLatestVersion() {
+    // this function shows a message if the version of the tool equals the latest uploaded version in Github
+    try {
+        // fetch latest version from Github
+        const response = await axios.default.get('https://raw.githubusercontent.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/main/service/latestVersion.json');
+        let latestVersion = response?.data?.latestVersion
+
+        // if latest version from Github does not match script version, display update message
+        if (response.data) {
+            if (latestVersion !== currentVersion) {
+                console.log(` ${fgColor.FgRed}- update available!${fgColor.FgGray} Run 'git pull' to update from ${currentVersion} --> ${latestVersion}${colorReset}`)
+            }
+        }
+    } catch (error) { // no need to log anything
+    }
+}
+
 async function getToken() {
     // If the client secret is filled in, then get token from the Azure App Registration
     if (global.clientSecret && global.clientSecret.length > 0) {
@@ -126,12 +143,12 @@ async function callApi(endpoint, accessToken) {
         if (myCache.get(endpoint) == undefined) myCache.set(endpoint, response.data, 120); // save to cache for 120 seconds
         return response.data;
     } catch (error) {
-        if (error.response.status == 403) {
-            // console.log(error.response.status, error.response?.config?.url)
+        if (error.response.status == 403 || error.response.status == 400) {
+            // console.log(error.response.status, error?.response?.statusText, error.response?.config?.url)
             // process.exit()
             global.forbiddenErrors.push(`${error?.response?.status} ${error?.response?.statusText} for '${error?.response?.config?.url}'`)
         }
     }
 };
 
-module.exports = { getToken, getTokenAzure, getAllWithNextLink, callApi }
+module.exports = { onLatestVersion, getToken, getTokenAzure, getAllWithNextLink, callApi }

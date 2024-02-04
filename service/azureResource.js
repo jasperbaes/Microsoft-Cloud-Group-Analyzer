@@ -25,6 +25,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
                         array.push({
                             "file": 'azureResource',
                             "groupID": groupID,
+                            "groupName": groupName,
                             "service": "Azure Resource",
                             "resourceID": res.id,
                             "name": res?.properties?.scope.substring(res?.properties?.scope.lastIndexOf('/') + 1), // take the resource name from the scope

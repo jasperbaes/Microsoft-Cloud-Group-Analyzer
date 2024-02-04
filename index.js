@@ -7,15 +7,19 @@ Description:
 Author: Jasper Baes (https://www.linkedin.com/in/jasper-baes/)
 Company: /
 Published: January, 2023 
-Dependencies: axios, msal-node, fs, readline, node-cache
+Dependencies: axios, msal-node, fs, readline, node-cache, json-2-csv
 ======================================================================
 */
+
+// version of the tool
+global.currentVersion = '2024.05'
 
 // Declare libaries
 require('dotenv').config();
 var fs = require('fs');
 const readline = require('readline');
 const helper = require('./helper');
+let converter = require('json-2-csv');
 
 // Scope declaration. Change property 'enabled' to false to put service out of scope for the scan
 let scope = [
@@ -35,7 +39,9 @@ let scope = [
     { file: 'mfaRegistration', bgColor: '\x1b[41m', enabled: true},
     { file: 'authenticationMethods', bgColor: '\x1b[41m', enabled: true},
     { file: 'team', bgColor: '\x1b[41m', enabled: true},
-    { file: 'azureResource', bgColor: '\x1b[41m', enabled: true}
+    { file: 'azureResource', bgColor: '\x1b[41m', enabled: true},
+    { file: 'accessPackage', bgColor: '\x1b[41m', enabled: true},
+    { file: 'accessPackageResource', bgColor: '\x1b[41m', enabled: true}
 ]
 
 global.fgColor = {
@@ -52,7 +58,9 @@ global.colorReset = "\x1b[0m"
 
 async function init(input) {
     console.log(`\n${fgColor.FgCyan}%s${colorReset}`, ' ## MICROSOFT CLOUD GROUP ANALYZER ##');
-    console.log(` ${fgColor.FgGray}- https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
+    console.log(` ${fgColor.FgGray}https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
+
+    helper.onLatestVersion()
     
     // set global variables
     global.tenantID = process.env.TENANTID
@@ -62,14 +70,16 @@ async function init(input) {
     let token = await helper.getToken() // get access token from Microsoft Graph API
     let tokenAzure = await helper.getTokenAzure() // get access token from Azure Service Management API
     
-    global.scriptParameter = process.argv.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
+    // get script arguments
+    global.scriptParameters = process.argv
+    let parameterID = scriptParameters.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
 
-    if (token && input == undefined && scriptParameter.length <= 0) { // if this function parameter 'input' is not provided, prompt the user
+    if (token && input == undefined && parameterID?.length <= 0) { // if this function parameter 'input' is not provided, prompt the user
         getInput(token?.accessToken, tokenAzure?.accessToken, tenantID)
     } else if (token && input) { // if this function parameter 'input' is provided, continue
         handleInput(token?.accessToken, tokenAzure?.accessToken, input, tenantID)
-    } else if (token && scriptParameter.length > 0) { // if this script parameter is provided, continue with the first script parameter
-        handleInput(token?.accessToken, tokenAzure?.accessToken, scriptParameter.slice(0, 1), tenantID)
+    } else if (token && parameterID?.length > 0) { // if this script parameter is provided, continue with the first script parameter
+        handleInput(token?.accessToken, tokenAzure?.accessToken, parameterID?.slice(0, 1), tenantID)
     }
 }
 
@@ -83,7 +93,7 @@ async function getInput(accessToken, accessTokenAzure, tenantID) {
     });
 
     // Get input 'groupID' from the user via terminal
-    rl.question(` Enter a group ID, a user ID or 'all': `, async (userInput) => {
+    rl.question(`\n Enter a group ID, a user ID or 'all': `, async (userInput) => {
         rl.close();
         handleInput(accessToken, accessTokenAzure, [userInput], tenantID)
     });
@@ -91,9 +101,9 @@ async function getInput(accessToken, accessTokenAzure, tenantID) {
 
 async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
     // if user input is a userID, then add groups where user is member of to scope of the scan
-    let isUser = await helper.callApi(`https://graph.microsoft.com/v1.0/users/${groupID[0]}`, accessToken)
+    let isUser = await helper.callApi(`https://graph.microsoft.com/v1.0/users/${groupID[0]}?$select=id,userPrincipalName`, accessToken)
     if (isUser != undefined) {
-        let groups = await helper.getAllWithNextLink(accessToken, `/v1.0/users/${groupID}/memberOf`)
+        let groups = await helper.getAllWithNextLink(accessToken, `/v1.0/users/${groupID}/memberOf?$select=id`)
         groupID = groups.map(group => group.id)
     }
 
@@ -108,7 +118,7 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
 
     // Loop over all groupIDs in scope of the scan
     for (let group of groupID) {
-        let groupObject = await helper.callApi(`https://graph.microsoft.com/v1.0/groups/${group}`, accessToken)
+        let groupObject = await helper.callApi(`https://graph.microsoft.com/v1.0/groups/${group}?$select=id,displayName`, accessToken)
 
         // exit if the user input is invalid (not a group ID and not a user ID)
         if (groupObject == undefined && isUser == undefined) {
@@ -182,7 +192,8 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
 
     if (uniqueErrorArray.length > 0) {
         console.log(`\n ${uniqueErrorArray.length} ERROR(S):`)
-        console.log(uniqueErrorArray)
+        console.log(' ', uniqueErrorArray)
+        console.log(' Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
     }
     
     formatOutput(array)
@@ -206,7 +217,35 @@ async function formatOutput(arr) {
     });
 
     console.log(`\n`)
-    process.exit() // exit script
+
+    // export results
+    const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+    try {
+        if (scriptParameters.some(param => ['--export-json', '-export-json', '--exportjson', '-exportjson'].includes(param.toLowerCase()))) {
+            await exportJSON(arr, `${today}-Cloud-Analyzer-export.json`)
+        } 
+        if (scriptParameters.some(param => ['--export-csv', '-export-csv', '--exportcsv', '-exportcsv'].includes(param.toLowerCase()))) {
+            await exportCSV(arr, `${today}-Cloud-Analyzer-export.csv`)
+        }
+    } catch (error) {
+        console.error(`ERROR: something went wrong exporting to JSON and/or CSV`)
+    }
+}
+
+async function exportJSON(arr, filename) { // export array to JSON file  in current working directory
+    fs.writeFile(filename, JSON.stringify(arr, null, 2), 'utf-8', err => {
+        if (err) return console.error(` ERROR: ${err}`);
+        console.log(` File '${filename}' successfully saved in current directory`);
+    });
+}
+
+async function exportCSV(arr, filename) { // export array to CSV file in current working directory
+    const csv = await converter.json2csv(arr);
+
+    fs.writeFile(filename, csv, err => {
+        if (err) return console.error(` ERROR: ${err}`);
+        console.log(` File '${filename}' successfully saved in current directory`);
+    });
 }
 
 module.exports = { }

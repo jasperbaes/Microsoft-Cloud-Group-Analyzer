@@ -1,7 +1,7 @@
 const helper = require('../helper');
 
 async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID) {
-    let result = await helper.callApi(`https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy`, accessToken);
+    let result = await helper.callApi(`https://graph.microsoft.com/beta/policies/authenticationMethodsPolicy?$select=authenticationMethodConfigurations`, accessToken);
 
     if (result == undefined) {
         return null
@@ -12,6 +12,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         .map(res => ({
             "file": 'authenticationMethods',
             "groupID": groupID,
+            "groupName": groupName,
             "service": "Entra ID Authentication Method",
             "resourceID": res.id,
             "name": res.id,

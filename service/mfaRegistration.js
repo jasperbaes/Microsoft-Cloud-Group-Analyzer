@@ -11,6 +11,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         targets.filter(target => target.id === groupID).map(target => ({
             "file": 'mfaRegistration',
             "groupID": groupID,
+            "groupName": groupName,
             "service": "MFA Registration Policy",
             "resourceID": 'authenticationMethodsPolicy',
             "name": 'MFA Registration',

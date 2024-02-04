@@ -1,7 +1,7 @@
 const helper = require('../helper');
 
 async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID) {
-    let result = await helper.getAllWithNextLink(accessToken, `/beta/deviceManagement/configurationPolicies?$expand=assignments`)
+    let result = await helper.getAllWithNextLink(accessToken, `/beta/deviceManagement/configurationPolicies?$expand=assignments&$select=id,assignments,name`)
 
     if (result == undefined) {
         return null
@@ -12,6 +12,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
     .map(res => ({
         "file": 'configurationPolicies',
         "groupID": groupID,
+        "groupName": groupName,
         "service": "Intune Configuration Policy",
         "resourceID": res.id,
         "name": res.name,

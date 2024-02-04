@@ -1,7 +1,7 @@
 const helper = require('../helper');
 
 async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID) {
-    let result = await helper.getAllWithNextLink(accessToken, `/beta/policies/conditionalAccessPolicies`)
+    let result = await helper.getAllWithNextLink(accessToken, `/beta/policies/conditionalAccessPolicies?$select=id,displayName,conditions,state`)
 
     if (result == undefined) {
         return null
@@ -12,6 +12,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         .map(res => ({
             "file": 'conditionalAccess',
             "groupID": groupID,
+            "groupName": groupName,
             "service": "Entra ID Conditional Access Policy",
             "resourceID": res.id,
             "name": res.displayName,

@@ -1,4 +1,24 @@
-# Microsoft Cloud Group Analyzer
+
+<br>
+<p align="center">
+  <a href="https://www.linkedin.com/in/jasper-baes/">
+    <img src="./readme/logo.png" alt="Logo" height="80">
+  </a>
+  <h3 align="center">Microsoft Cloud Group Analyzer</h3>
+  <p align="center">
+    Track where Entra ID Groups are used! 💪
+    <br />
+    <a href="https://github.com/Microsoft-Cloud-Group-Analyzer#installation-and-usage">View setup guide </a>
+    ·
+    <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/fork"> Fork this project</a>
+    ·
+    <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues"> Report Bug </a>
+    ·
+    <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues"> Request Feature </a>
+  </p>
+</p>
+<br />
+
 
 Entra ID Groups are often used in multiple locations in your environment and used by multiple admins. Without continuously updating documentation or syncing with other admins, you’re all using groups blindly, potentially causing unintended security or user impact through changes in group memberships. Therefore, I've created this script.
 
@@ -12,6 +32,8 @@ Group Analyzer is an essential script for Microsoft Cloud Administrators seeking
 - **Enhance Group Management:** Maintain a clear overview of group assignments, ensuring efficient and informed management of your cloud environment.
 - **Save time:** Don't spend time going over all of your policies and services looking where a certain Entra ID group is used.
 - **Feel in control:** To be certain and have confirmation that you are not adding users to groups, causing unforseen impact.
+
+Find the original post on [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7157748584753319936/).
 
 ## What's in scope?
 
@@ -57,8 +79,6 @@ cd ./Microsoft-Cloud-Group-Analyzer
 npm install
 ```
 
-## Usage
-
 Create the file '.env' in the root of the folder and fill in below fields (guide above):
 
 ```
@@ -67,12 +87,17 @@ TENANTID=<your tenant ID>
 CLIENTID=<app registration ID>
 ```
 
-To run the script:
+## Usage
+
+Examples:
 
 ```sh
 node index.js
-// or with userID/groupID/'all' as parameter
 node index.js xxxx-xxxx-xxxx-xxxx
+node index.js xxxx-xxxx-xxxx-xxxx --export-json
+node index.js xxxx-xxxx-xxxx-xxxx --export-csv
+node index.js xxxx-xxxx-xxxx-xxxx --export-json --export-csv
+node index.js all --export-json --export-csv
 ```
 
 Now paste a group ID, a user ID or the word 'all'.
@@ -83,6 +108,14 @@ Now paste a group ID, a user ID or the word 'all'.
  | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope |
  | 'all'             |                 all                  |              This option will take all Entra ID groups in scope |
 
+## Issues?
+
+I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
+
+## Contact
+
+Jasper Baes (https://www.linkedin.com/in/jasper-baes)
+
 ## Release history
 
 Release version numbers: YEAR-WEEK-REV
@@ -91,17 +124,12 @@ Release version numbers: YEAR-WEEK-REV
   - temporary removed documentation for user login. App authentication recommended.
   - improved error reporting
   - improved documentation
-
-## Issues?
-
-I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
+  - export to JSON and CSV
+  - added new service: Access Packages
+  - added version check
 
 ## License
 
 Please be aware that the Group Analyzer code is intended solely for individual administrators' personal use. It is not licensed for use by organizations seeking financial gain. This restriction is in place to ensure the responsible and fair use of the tool. Admins are encouraged to leverage this code to enhance their own understanding and management within their respective environments, but any commercial or organizational profit-driven usage is strictly prohibited.
 
 Thank you for respecting these usage terms and contributing to a fair and ethical software community. 
-
-## Contact
-
-Jasper Baes (https://www.linkedin.com/in/jasper-baes)
