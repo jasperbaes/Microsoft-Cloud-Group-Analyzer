@@ -120,16 +120,21 @@ Jasper Baes (https://www.linkedin.com/in/jasper-baes)
 
 Release version numbers: YEAR-WEEK-REV
 
-- 2023.05
-  - temporary removed documentation for user login. App authentication recommended.
+- 2024.05
+  - temporary removed documentation for user login. App authentication recommended for now.
   - improved error reporting
-  - improved documentation
-  - export to JSON and CSV
-  - added new service: Access Packages
-  - added version check
+  - improved documentation and setup guide
+
+## Issues?
+
+I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
 
 ## License
 
 Please be aware that the Group Analyzer code is intended solely for individual administrators' personal use. It is not licensed for use by organizations seeking financial gain. This restriction is in place to ensure the responsible and fair use of the tool. Admins are encouraged to leverage this code to enhance their own understanding and management within their respective environments, but any commercial or organizational profit-driven usage is strictly prohibited.
 
 Thank you for respecting these usage terms and contributing to a fair and ethical software community. 
+
+## Contact
+
+Jasper Baes (https://www.linkedin.com/in/jasper-baes)
