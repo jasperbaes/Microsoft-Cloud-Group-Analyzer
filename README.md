@@ -2,13 +2,13 @@
 <br>
 <p align="center">
   <a href="https://www.linkedin.com/in/jasper-baes/">
-    <img src="./readme/logo.png" alt="Logo" height="80">
+    <img src="./readme/logo.png" alt="Logo" height="130">
   </a>
   <h3 align="center">Microsoft Cloud Group Analyzer</h3>
   <p align="center">
     Track where Entra ID Groups are used! 💪
     <br />
-    <a href="https://github.com/Microsoft-Cloud-Group-Analyzer#installation-and-usage">View setup guide </a>
+    <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage">View setup guide </a>
     ·
     <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/fork"> Fork this project</a>
     ·
@@ -58,7 +58,7 @@ Group Analyzer lists group memberships for following services:
 | ✅         |               Microsoft 365 Teams                |                                                                                                    |
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
 | ✅         |               Azure Subscriptions                |                                                                                                    |
-| ❌         |                  Access Package                  |                                                                                        Coming soon |
+| ✅         |                  Access Package                  |                                                                                         |
 | ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon (Only for Microsoft Authenticator app) |
 | ❌         |           Entra ID Administrative Unit           |                                                                                        Coming soon |
 | ❌         |              Entra ID Cross Tenant               |                                                                                        Coming soon |
@@ -100,7 +100,7 @@ node index.js xxxx-xxxx-xxxx-xxxx --export-json --export-csv
 node index.js all --export-json --export-csv
 ```
 
-Now paste a group ID, a user ID or the word 'all'.
+Without specifying an ID in the command, the script will ask you to paste a group ID, a user ID or the word 'all':
 
  | Option            |               example                |                                                     Description |
  | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
@@ -124,6 +124,11 @@ Release version numbers: YEAR-WEEK-REV
   - temporary removed documentation for user login. App authentication recommended for now.
   - improved error reporting
   - improved documentation and setup guide
+  - export to JSON and CSV
+  - added new service: Access Packages
+  - added version checker
+- 2024.04
+  - initial release
 
 ## Issues?
 
