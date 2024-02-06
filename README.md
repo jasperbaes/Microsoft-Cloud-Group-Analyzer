@@ -108,6 +108,31 @@ Without specifying an ID in the command, the script will ask you to paste a grou
  | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope |
  | 'all'             |                 all                  |              This option will take all Entra ID groups in scope |
 
+## Alternative installation using Docker
+
+### Clone repository
+
+```sh
+git clone https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer.git
+cd ./Microsoft-Cloud-Group-Analyzer
+```
+
+### Run with Azure CLI credentials
+If you have installed `az` command, you can use:
+
+```sh
+# run in Microsoft-Cloud-Group-Analyzer directory
+docker compose run --it analyzer_az_cli
+```
+
+### Run with Application registration
+See instructions for application registration above, create same `.env` and then run:
+```sh
+# run in Microsoft-Cloud-Group-Analyzer directory
+docker compose run --it analyzer_app_registration
+```
+
+
 ## Issues?
 
 I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
