@@ -1,0 +1,27 @@
+@font-face {
+    font-family: mcgaFont;
+    src: url(./AvenirBook.ttf);
+}
+
+@font-face {
+    font-family: mcgaFontBold;
+    src: url(./AvenirBlack.ttf);
+}
+
+* {
+    font-family: mcgaFont !important
+}
+
+.font-bold {
+    font-family: mcgaFontBold !important
+}
+
+body { background-color: #eef0f4; font-size: 1.2rem}
+.box { background-color: #ffffff; border-radius: 20px; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;}
+
+.color-primary { color: #27374d}
+.color-secondary { color: #545454}
+.color-accent { color: #ff9142}
+
+h1 > span { color: white !important; background-color: #ff9142; border-radius: 20px;}
+.badge { background-color: #ffe9db; border-radius: 15px; }

@@ -2,7 +2,7 @@
 <br>
 <p align="center">
   <a href="https://www.linkedin.com/in/jasper-baes/">
-    <img src="./readme/logo.png" alt="Logo" height="130">
+    <img src="./assets/logo.png" alt="Logo" height="130">
   </a>
   <h3 align="center">Microsoft Cloud Group Analyzer</h3>
   <p align="center">
@@ -24,7 +24,7 @@ Entra ID Groups are often used in multiple locations in your environment and use
 
 For **Microsoft Cloud admins** who **struggle to keep track of where Entra ID groups are used**, Group Analyzer is an **opensource script** that provides **instant insights in what services/policies/... a given group or user is scoped to**.
 
-<a href="./readme/mcga.png" target="_blank"><img src="./readme/mcga.png" width="100%" /></a>
+<a href="./assets/mcga.png" target="_blank"><img src="./assets/mcga.png" width="100%" /></a>
 
 Group Analyzer is an essential script for Microsoft Cloud Administrators seeking comprehensive visibility into the usage of Entra ID groups across their environment. By providing detailed insights, this tool empowers admins to:
 
@@ -68,9 +68,9 @@ Group Analyzer lists group memberships for following services:
 
 ## Installation and usage
 
-<a href="./readme/mcga-1.png" target="_blank"><img src="./readme/mcga-1.png" width="60%" /></a> <br>
-<a href="./readme/mcga-2.png" target="_blank"><img src="./readme/mcga-2.png" width="60%" /></a> <br>
-<a href="./readme/mcga-3.png" target="_blank"><img src="./readme/mcga-3.png" width="60%" /></a> <br>
+<a href="./assets/mcga-1.png" target="_blank"><img src="./assets/mcga-1.png" width="60%" /></a> <br>
+<a href="./assets/mcga-2.png" target="_blank"><img src="./assets/mcga-2.png" width="60%" /></a> <br>
+<a href="./assets/mcga-3.png" target="_blank"><img src="./assets/mcga-3.png" width="60%" /></a> <br>
 
 
 ```sh

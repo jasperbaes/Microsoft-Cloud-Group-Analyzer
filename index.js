@@ -193,10 +193,11 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     if (uniqueErrorArray.length > 0) {
         console.log(`\n ${uniqueErrorArray.length} ERROR(S):`)
         console.log(' ', uniqueErrorArray)
-        console.log(' Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
+        console.log(' Error fetching above API endpoints. Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
     }
     
     formatOutput(array)
+    helper.generateWebReport(array)
 }
 
 async function formatOutput(arr) {
@@ -222,30 +223,14 @@ async function formatOutput(arr) {
     const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
     try {
         if (scriptParameters.some(param => ['--export-json', '-export-json', '--exportjson', '-exportjson'].includes(param.toLowerCase()))) {
-            await exportJSON(arr, `${today}-Cloud-Analyzer-export.json`)
+            await helper.exportJSON(arr, `${today}-Cloud-Analyzer-export.json`)
         } 
         if (scriptParameters.some(param => ['--export-csv', '-export-csv', '--exportcsv', '-exportcsv'].includes(param.toLowerCase()))) {
-            await exportCSV(arr, `${today}-Cloud-Analyzer-export.csv`)
+            await helper.exportCSV(arr, `${today}-Cloud-Analyzer-export.csv`)
         }
     } catch (error) {
         console.error(`ERROR: something went wrong exporting to JSON and/or CSV`)
     }
-}
-
-async function exportJSON(arr, filename) { // export array to JSON file  in current working directory
-    fs.writeFile(filename, JSON.stringify(arr, null, 2), 'utf-8', err => {
-        if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
-    });
-}
-
-async function exportCSV(arr, filename) { // export array to CSV file in current working directory
-    const csv = await converter.json2csv(arr);
-
-    fs.writeFile(filename, csv, err => {
-        if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
-    });
 }
 
 module.exports = { }
