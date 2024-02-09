@@ -98,15 +98,29 @@ node index.js xxxx-xxxx-xxxx-xxxx --export-json
 node index.js xxxx-xxxx-xxxx-xxxx --export-csv
 node index.js xxxx-xxxx-xxxx-xxxx --export-json --export-csv
 node index.js all --export-json --export-csv
+node index.js all -f Cloud-Analyzer-export.json
+node index.js xxxx-xxxx-xxxx-xxxx --cli-only
 ```
+
+| Parameter           |               Description |
+| ----------------- | --------------------------------------------------------------: |
+| `xxxx-xxxx-xxxx-xxxx` | The group ID / user ID or 'all' should be the first parameter. This parameter is optional.  |
+| `--export-json` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional and can be used with any other parameter. |
+| `--export-csv` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional  and can be used with any other parameter. |
+| `-f` | This parameter specifies an import JSON file. Format needs to be the same as the JSON exported with the parameter --export-json. This parameter is optional  and can be used with any other parameter. |
+| `--cli-only` | With this parameter, the web report will not be generated or opened. This parameter is optional  and can be used with any other parameter. |
 
 Without specifying an ID in the command, the script will ask you to paste a group ID, a user ID or the word 'all':
 
- | Option            |               example                |                                                     Description |
- | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
- | Entra ID Group ID | 99ccbd7e-0fc9-4545-8cf9-ee89191ed78d |                       The given group will be taken in scope ID |
- | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope |
- | 'all'             |                 all                  |              This option will take all Entra ID groups in scope |
+| Option            |               example                |                                                     Description |
+| ----------------- | :----------------------------------: | --------------------------------------------------------------: |
+| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group will be taken in scope ID |
+| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are taken in scope |
+| 'all'             |                 `all`                  |              This option will take all Entra ID groups in scope |
+
+## Web report
+
+An automated visual web report will be generated and opened in your default browser. To skip the web report and use the command line interface only, include the `--cli-only` parameter. To save it as a PDF, use the shortcut Ctrl + P.
 
 ## Issues?
 

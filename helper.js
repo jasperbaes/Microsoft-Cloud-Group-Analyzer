@@ -4,6 +4,8 @@ const msal = require('@azure/msal-node');
 const NodeCache = require( "node-cache" );
 const myCache = new NodeCache();
 const identity = require('@azure/identity')
+var fs = require('fs');
+let converter = require('json-2-csv');
 
 // express
 const express = require('express')
@@ -174,23 +176,18 @@ async function exportCSV(arr, filename) { // export array to CSV file in current
 }
 
 async function generateWebReport(arr) { // generates and opens a web report
+    // if --cli-only is specified, exit
+    if (scriptParameters.some(param => ['--cli-only', '-cli-only', '--clionly', '-clionly'].includes(param.toLowerCase()))) {
+        process.exit()
+    } 
 
-    app.get('/style.css', function(req, res) {
-        res.sendFile(__dirname + "/assets/" + "style.css");
-    });
+    // host files
+    app.get('/style.css', function(req, res) { res.sendFile(__dirname + "/assets/" + "style.css"); });
+    app.get('/AvenirBlack.ttf', function(req, res) { res.sendFile(__dirname + "/assets/fonts/" + "AvenirBlack.ttf"); });
+    app.get('/AvenirBook.ttf', function(req, res) { res.sendFile(__dirname + "/assets/fonts/" + "AvenirBook.ttf"); });
+    app.get('/logo.png', function(req, res) { res.sendFile(__dirname + "/assets/" + "logo.png"); });
 
-    app.get('/AvenirBlack.ttf', function(req, res) {
-        res.sendFile(__dirname + "/assets/fonts/" + "AvenirBlack.ttf");
-    });
-
-    app.get('/AvenirBook.ttf', function(req, res) {
-        res.sendFile(__dirname + "/assets/fonts/" + "AvenirBook.ttf");
-    });
-
-    app.get('/logo.png', function(req, res) {
-        res.sendFile(__dirname + "/assets/" + "logo.png");
-    });
-
+    // host report page
     app.get('/', (req, res) => {
         let htmlContent = `
           <!DOCTYPE html>
@@ -204,12 +201,24 @@ async function generateWebReport(arr) { // generates and opens a web report
             </head>
             <body>
               <div class="container mt-4 mb-5">
-                <p class="text-center"><img src="logo.png" alt="Logo" height="160"><p>
-                <h1 class="mb-5 text-center font-bold color-primary">Microsoft Cloud <span class="font-bold color-accent px-3 py-1">Group Analyzer</span></h1>`
+                <p class="text-center"><a class="text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank"><img src="logo.png" alt="Logo" height="160"></a><p>
+                <h1 class="mb-0 text-center font-bold color-primary">Microsoft Cloud <span class="font-bold color-accent px-2 py-0">Group Analyzer</span></h1>
+                <p class="text-center mt-3 mb-5 font-bold color-secondary">Track where your Entra ID Groups are used! 💪</p>
+        `
         
         let printedServices = new Set();
         
-        arr.sort((a, b) => a.service.localeCompare(b.service)).forEach(item => {
+        arr.sort((a, b) => {
+            // First, sort by service
+            const serviceComparison = a.service.localeCompare(b.service);
+          
+            // If services are equal, then sort by groupName
+            if (serviceComparison === 0) {
+              return a.groupName.localeCompare(b.groupName);
+            }
+          
+            return serviceComparison;
+          }).forEach(item => {
             // if the service is not yet evaluated for the first time, then print the service
             if (!printedServices.has(item.service)) {
                 // Close the previous ul if it was opened
@@ -219,20 +228,19 @@ async function generateWebReport(arr) { // generates and opens a web report
                 
                 htmlContent += `
                     <div class="box mt-4 p-4">
-                    <h3 class="mt-1"><span class="badge fs-2 font-bold color-accent px-3 py-2">${item.service}</span> <span class="fs-5 font-bold color-secondary">assignments:</span></h3>
+                    <h3 class="mt-1"><span class="badge fs-2 font-bold color-accent px-2 py-2">${item.service}</span> <span class="fs-5 font-bold color-secondary">assignments:</span></h3>
                     <ul class="list-group list-group-flush ms-3 color-secondary">`;
                 
                 printedServices.add(item.service);
             }
         
-            // if the item has the property 'details', then also print that property
             htmlContent += `
                 <li class="list-group-item d-flex justify-content-between align-items-start color-secondary">
                     
-                <div class="row align-items-start w-100">
-                        <div class="col-3 font-bold">${item.groupName}</div>
-                        <div class="col font-bold color-primary">${item.name}</div>
-                        <div class="col">${item.details}</div>
+                <div class="row align-items-center w-100">
+                        <div class="col font-bold"> ${(item.groupName.includes('@')) ? 'user' : 'group'}: <span class="badge-blue font-bold color-primary px-2 py-0">${item.groupName}</span></div>
+                        <div class="col font-bold">${item.name}</div>
+                        <div class="col-3 text-end">${item.details}</div>
                     </div>
                 </li>`;
         });
@@ -245,7 +253,7 @@ async function generateWebReport(arr) { // generates and opens a web report
         htmlContent += 
                 `</ul>
               </div>
-              <p class="text-center mt-3 mb-0">made by <a class="color-accent font-bold text-decoration-none" href="https://www.linkedin.com/in/jasper-baes/" target="_blank">Jasper Baes</a></p>
+              <p class="text-center mt-5 mb-0">© <a class="color-primary font-bold text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank">Microsoft Cloud Group Analyzer</a>, made by <a class="color-accent font-bold text-decoration-none" href="https://www.linkedin.com/posts/jasper-baes_entraid-azure-activity-7157748584753319936-cqFX" target="_blank">Jasper Baes</a></p>
               <p class="text-center mt-1 mb-5"><a class="color-secondary" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank">https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer</a></p>
             </body>
           </html>`;

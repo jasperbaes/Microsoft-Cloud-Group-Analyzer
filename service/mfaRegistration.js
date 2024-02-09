@@ -15,7 +15,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "MFA Registration Policy",
             "resourceID": 'authenticationMethodsPolicy',
             "name": 'MFA Registration',
-            "details": `group '${groupName}' ${detailSuffix}`
+            "detailsGroup": `group '${groupName}' ${detailSuffix}`,
+            "details": ``
         }));
 
     const registrationCampaign = result?.registrationEnforcement?.authenticationMethodsRegistrationCampaign || {};
