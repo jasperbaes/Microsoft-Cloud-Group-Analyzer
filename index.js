@@ -12,7 +12,7 @@ Dependencies: axios, msal-node, fs, readline, node-cache, json-2-csv
 */
 
 // version of the tool
-global.currentVersion = '2024.05'
+global.currentVersion = '2024.06'
 
 // Declare libaries
 require('dotenv').config();
@@ -57,8 +57,8 @@ global.fgColor = {
 global.colorReset = "\x1b[0m"
 
 async function init(input) {
-    console.log(`\n${fgColor.FgCyan}%s${colorReset}`, ' ## MICROSOFT CLOUD GROUP ANALYZER ##');
-    console.log(` ${fgColor.FgGray}https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
+    console.log(`\n${fgColor.FgCyan} ## MICROSOFT CLOUD GROUP ANALYZER ## ${colorReset}${fgColor.FgGray}v${currentVersion}${colorReset}`);
+    console.log(` ${fgColor.FgGray}Created by Jasper Baes - https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
 
     helper.onLatestVersion()
     

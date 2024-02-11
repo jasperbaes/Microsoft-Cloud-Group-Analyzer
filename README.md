@@ -6,7 +6,7 @@
   </a>
   <h3 align="center">Microsoft Cloud Group Analyzer</h3>
   <p align="center">
-    Track where Entra ID Groups are used! 💪
+    Track where your Entra ID Groups are used! 💪
     <br />
     <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage">View setup guide </a>
     ·
@@ -58,7 +58,7 @@ Group Analyzer lists group memberships for following services:
 | ✅         |               Microsoft 365 Teams                |                                                                                                    |
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
 | ✅         |               Azure Subscriptions                |                                                                                                    |
-| ✅         |                  Access Package                  |                                                                                         |
+| ✅         |                  Access Package                  |                                                                                                    |
 | ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon (Only for Microsoft Authenticator app) |
 | ❌         |           Entra ID Administrative Unit           |                                                                                        Coming soon |
 | ❌         |              Entra ID Cross Tenant               |                                                                                        Coming soon |
@@ -102,11 +102,11 @@ node index.js all --export-json --export-csv
 
 Without specifying an ID in the command, the script will ask you to paste a group ID, a user ID or the word 'all':
 
- | Option            |               example                |                                                     Description |
- | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
- | Entra ID Group ID | 99ccbd7e-0fc9-4545-8cf9-ee89191ed78d |                       The given group will be taken in scope ID |
- | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope |
- | 'all'             |                 all                  |              This option will take all Entra ID groups in scope |
+ | Option            |               example                |                                                                 Description |
+ | ----------------- | :----------------------------------: | --------------------------------------------------------------------------: |
+ | Entra ID Group ID | 99ccbd7e-0fc9-4545-8cf9-ee89191ed78d |                       The given group ID + subgroups will be taken in scope |
+ | Entra ID User ID  | caf7b774-c8ab-47c3-a39e-d0a0d85d6423 | All groups where the given user is member of are taken in scope + subgroups |
+ | 'all'             |                 all                  |                          This option will take all Entra ID groups in scope |
 
 ## Issues?
 
