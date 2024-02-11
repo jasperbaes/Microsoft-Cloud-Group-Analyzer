@@ -8,9 +8,15 @@ var fs = require('fs');
 let converter = require('json-2-csv');
 
 // express
-const express = require('express')
-const app = express()
-const port = 3000
+try {
+    const express = require('express')
+    global.app = express()
+    global.port = 3000
+} catch (error) {
+    console.log(`\n ERROR: 'Express' module not installed. Run 'npm install'`)
+    process.exit() // exiting
+}
+
 
 global.forbiddenErrors = []
 

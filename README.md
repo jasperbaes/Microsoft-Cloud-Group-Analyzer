@@ -114,13 +114,15 @@ Without specifying an ID in the command, the script will ask you to paste a grou
 
 | Option            |               example                |                                                     Description |
 | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
-| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group will be taken in scope ID |
-| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are taken in scope |
+| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group ID will be in scope |
+| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are in scope |
 | 'all'             |                 `all`                  |              This option will take all Entra ID groups in scope |
 
 ## Web report
 
-An automated visual web report will be generated and opened in your default browser. To skip the web report and use the command line interface only, include the `--cli-only` parameter. To save it as a PDF, use the shortcut Ctrl + P.
+Automatically, a visual web report will be generated and opened in your default browser. To save the report as a PDF file, use the shortcut Ctrl + P. To skip the web report and use the command line interface only, include the `--cli-only` parameter.
+
+<a href="./assets/example-report.png" target="_blank"><img src="./assets/example-report.png" width="60%" /></a>
 
 ## Issues?
 
@@ -134,6 +136,9 @@ Jasper Baes (https://www.linkedin.com/in/jasper-baes)
 
 Release version numbers: YEAR-WEEK-REV
 
+- 2024.06
+  - visual webreport
+  - open JSON export as input file
 - 2024.05
   - temporary removed documentation for user login. App authentication recommended for now.
   - improved error reporting
@@ -153,7 +158,5 @@ I cannot rule out the existence of current or future issues with this open-sourc
 Please be aware that the Group Analyzer code is intended solely for individual administrators' personal use. It is not licensed for use by organizations seeking financial gain. This restriction is in place to ensure the responsible and fair use of the tool. Admins are encouraged to leverage this code to enhance their own understanding and management within their respective environments, but any commercial or organizational profit-driven usage is strictly prohibited.
 
 Thank you for respecting these usage terms and contributing to a fair and ethical software community. 
-
-## Contact
 
 Jasper Baes (https://www.linkedin.com/in/jasper-baes)
