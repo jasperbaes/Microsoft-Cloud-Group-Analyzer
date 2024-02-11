@@ -16,7 +16,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Access Package",
             "resourceID": res.id,
             "name": `${accessPackages?.find(accessPackage => accessPackage?.id == res?.accessPackageId)?.displayName} (${res?.displayName})`,
-            "details": `group '${groupName}'`
+            "detailsGroup": `group '${groupName}'`,
+            "details": ``
     }))
 }
 

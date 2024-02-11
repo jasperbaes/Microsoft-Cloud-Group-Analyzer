@@ -1,0 +1,72 @@
+[
+  {
+    "file": "conditionalAccess",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "Intune users",
+    "service": "Entra ID Conditional Access Policy",
+    "resourceID": "cc6cbfea-bfbe-40b7-9fad-814253ae6bd3",
+    "name": "CA03: Require compliant device",
+    "detailsGroup": "'Intune users' included in policy",
+    "details": "policy state: enabled"
+  },
+  {
+    "file": "conditionalAccess",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "Intune users",
+    "service": "Entra ID Conditional Access Policy",
+    "resourceID": "12925ae1-00d9-41ca-9657-6b06ccf7b754",
+    "name": "CA11: Require trusted location",
+    "detailsGroup": "'Intune users' included in policy",
+    "details": "policy state: enabled"
+  },
+  {
+    "file": "conditionalAccess",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "sg-licence-M365BP",
+    "service": "Entra ID Conditional Access Policy",
+    "resourceID": "d232d442-40b6-4b40-b203-b41a67769ab8",
+    "name": "CA12: Require phishing-resistant MFA",
+    "detailsGroup": "'sg-licence-M365BP' included in policy",
+    "details": "policy state: enabled"
+  },
+  {
+    "file": "app",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "sg-license-M365BP",
+    "service": "Entra ID Enterprise Application",
+    "resourceID": "7bff54c4-53f8-466e-b36b-88d3700825db_SinglePlatformRestriction",
+    "name": "TimeSheetsApp",
+    "detailsGroup": "group 'sg-license-M365BP'",
+    "details": ""
+  },
+  {
+    "file": "configurationProfiles",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "MDM Pilot - Bitlocker",
+    "service": "Intune Device Configuration Profile ",
+    "resourceID": "d77377a0-6ae7-4832-b1ea-1cb1f9c144c3_SinglePlatformRestriction",
+    "name": "PILOT - W10 Bitlocker ",
+    "detailsGroup": "group ''MDM Pilot - Bitlocker'",
+    "details": ""
+  },
+  {
+    "file": "deviceScript",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "MDM Pilot",
+    "service": "Intune Device Script",
+    "resourceID": "eba944d6-4f33-4a3e-aa04-dfc0e3fa0708_SinglePlatformRestriction",
+    "name": "PILOT – Office Configuration",
+    "detailsGroup": "group ''MDM Pilot'",
+    "details": ""
+  },
+  {
+    "file": "enrollOSrestriction",
+    "groupID": "44d8e923-b870-437a-b93b-754e221f9dc4",
+    "groupName": "admin@example.onmicrosoft.com",
+    "service": "Azure Resource",
+    "resourceID": "9e00c6f6-3038-45e1-806e-9749302f89b1_SinglePlatformRestriction",
+    "name": "virtualMachine-Task-Exports",
+    "detailsGroup": "user 'admin@example.onmicrosoft.com'",
+    "details": ""
+  }
+]

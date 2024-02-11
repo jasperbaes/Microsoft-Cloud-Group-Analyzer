@@ -16,7 +16,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
         "service": "Intune Configuration Policy",
         "resourceID": res.id,
         "name": res.name,
-        "details": `group '${groupName}'`
+        "detailsGroup": `group '${groupName}'`,
+        "details": ``
     }))
 }
 

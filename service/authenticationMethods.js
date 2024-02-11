@@ -16,7 +16,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Entra ID Authentication Method",
             "resourceID": res.id,
             "name": res.id,
-            "details": `group '${groupName}' is ${(res.includeTargets.filter(x => x.id == groupID).length > 0) ? 'included' : 'excluded'} (authentication method is ${res.state})`
+            "detailsGroup": `group '${groupName}' is ${(res.includeTargets.filter(x => x.id == groupID).length > 0) ? 'included' : 'excluded'}`,
+            "details": `authentication method is ${res.state}`
     }))
 
     return []

@@ -29,7 +29,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
                             "service": "Azure Resource",
                             "resourceID": res.id,
                             "name": res?.properties?.scope.substring(res?.properties?.scope.lastIndexOf('/') + 1), // take the resource name from the scope
-                            "details": `${(groupName.includes('@')) ? 'user' : 'group'} '${groupName}'`
+                            "detailsGroup": `${(groupName.includes('@')) ? 'user' : 'group'} '${groupName}'`,
+                            "details": ``
                         })
                     }
                 })

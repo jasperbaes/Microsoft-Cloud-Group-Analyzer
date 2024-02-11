@@ -15,7 +15,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Entra ID Enterprise Application",
             "resourceID": res.id,
             "name": res.resourceDisplayName,
-            "details": `has member group '${groupName}'`
+            "detailsGroup": `has member group '${groupName}'`,
+            "details": ``
     }))
 }
 

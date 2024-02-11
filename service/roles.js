@@ -16,7 +16,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Entra ID Directory role",
             "resourceID": res.id,
             "name": res.displayName,
-            "details": `role for group '${groupName}'`
+            "detailsGroup": `role for group '${groupName}'`,
+            "details": ``
     }))
 }
 
