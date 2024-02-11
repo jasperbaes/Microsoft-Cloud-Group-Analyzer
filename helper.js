@@ -30,7 +30,7 @@ async function onLatestVersion() {
         // if latest version from Github does not match script version, display update message
         if (response.data) {
             if (latestVersion !== currentVersion) {
-                console.log(` ${fgColor.FgRed}- update available!${fgColor.FgGray} Run 'git pull' to update from ${currentVersion} --> ${latestVersion}${colorReset}`)
+                console.log(` ${fgColor.FgGray}[${fgColor.FgRed}-${fgColor.FgGray}] ${fgColor.FgRed}update available!${fgColor.FgGray} Run 'git pull' and 'npm install' to update from ${currentVersion} --> ${latestVersion}${colorReset}`)
             }
         }
     } catch (error) { // no need to log anything
@@ -40,7 +40,7 @@ async function onLatestVersion() {
 async function getToken() {
     // If the client secret is filled in, then get token from the Azure App Registration
     if (global.clientSecret && global.clientSecret.length > 0) {
-        console.log(` ${fgColor.FgGray}- authenticated with app registration${colorReset}`)
+        console.log(` ${fgColor.FgGray}[${fgColor.FgGreen}+${fgColor.FgGray}] authenticated with app registration${colorReset}`)
 
         var msalConfig = {
             auth: {
@@ -82,7 +82,7 @@ async function getToken() {
                 process.exit()
             }
 
-            console.log(` ${fgColor.FgGray}- authenticated with ${user?.userPrincipalName}${colorReset}`)
+            console.log(` ${fgColor.FgGray}[${fgColor.FgGreen}+${fgColor.FgGray}] authenticated with ${user?.userPrincipalName}${colorReset}`)
 
             return {accessToken: token.token}
         } catch (error) {

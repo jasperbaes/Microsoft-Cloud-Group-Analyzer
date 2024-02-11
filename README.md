@@ -6,7 +6,7 @@
   </a>
   <h3 align="center">Microsoft Cloud Group Analyzer</h3>
   <p align="center">
-    Track where Entra ID Groups are used! 💪
+    Track where your Entra ID Groups are used! 💪
     <br />
     <a href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage">View setup guide </a>
     ·
@@ -25,6 +25,8 @@ Entra ID Groups are often used in multiple locations in your environment and use
 For **Microsoft Cloud admins** who **struggle to keep track of where Entra ID groups are used**, Group Analyzer is an **opensource script** that provides **instant insights in what services/policies/... a given group or user is scoped to**.
 
 <a href="./assets/mcga.png" target="_blank"><img src="./assets/mcga.png" width="100%" /></a>
+Generated webreport:
+<p align="center"><a href="./assets/example-report.png" target="_blank"><img src="./assets/example-report.png" width="60%" /></a></p>
 
 Group Analyzer is an essential script for Microsoft Cloud Administrators seeking comprehensive visibility into the usage of Entra ID groups across their environment. By providing detailed insights, this tool empowers admins to:
 
@@ -58,7 +60,7 @@ Group Analyzer lists group memberships for following services:
 | ✅         |               Microsoft 365 Teams                |                                                                                                    |
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
 | ✅         |               Azure Subscriptions                |                                                                                                    |
-| ✅         |                  Access Package                  |                                                                                         |
+| ✅         |                  Access Package                  |                                                                                                    |
 | ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon (Only for Microsoft Authenticator app) |
 | ❌         |           Entra ID Administrative Unit           |                                                                                        Coming soon |
 | ❌         |              Entra ID Cross Tenant               |                                                                                        Coming soon |
@@ -114,15 +116,13 @@ Without specifying an ID in the command, the script will ask you to paste a grou
 
 | Option            |               example                |                                                     Description |
 | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
-| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group ID will be in scope |
-| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are in scope |
+| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group ID + subgroups will be in scope |
+| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are in scope + subgroups |
 | 'all'             |                 `all`                  |              This option will take all Entra ID groups in scope |
 
 ## Web report
 
 Automatically, a visual web report will be generated and opened in your default browser. To save the report as a PDF file, use the shortcut Ctrl + P. To skip the web report and use the command line interface only, include the `--cli-only` parameter.
-
-<a href="./assets/example-report.png" target="_blank"><img src="./assets/example-report.png" width="60%" /></a>
 
 ## Issues?
 
