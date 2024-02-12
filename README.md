@@ -101,6 +101,7 @@ node index.js xxxx-xxxx-xxxx-xxxx --export-csv
 node index.js xxxx-xxxx-xxxx-xxxx --export-json --export-csv
 node index.js all --export-json --export-csv
 node index.js all -f Cloud-Analyzer-export.json
+node index.js xxxx-xxxx-xxxx-xxxx --export-json --cli-only
 node index.js xxxx-xxxx-xxxx-xxxx --cli-only
 ```
 
@@ -108,9 +109,9 @@ node index.js xxxx-xxxx-xxxx-xxxx --cli-only
 | ----------------- | --------------------------------------------------------------: |
 | `xxxx-xxxx-xxxx-xxxx` | The group ID / user ID or 'all' should be the first parameter. This parameter is optional.  |
 | `--export-json` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional and can be used with any other parameter. |
-| `--export-csv` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional  and can be used with any other parameter. |
-| `-f` | This parameter specifies an import JSON file. Format needs to be the same as the JSON exported with the parameter --export-json. This parameter is optional  and can be used with any other parameter. |
-| `--cli-only` | With this parameter, the web report will not be generated or opened. This parameter is optional  and can be used with any other parameter. |
+| `--export-csv` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional and can be used with any other parameter. |
+| `-f` | This parameter specifies an import JSON file. Format needs to be the same as the JSON exported with the parameter --export-json. This parameter is optional and can be used with any other parameter. |
+| `--cli-only` | With this parameter, the web report will not be generated or opened. This parameter is optional and can be used with any other parameter. |
 
 Without specifying an ID in the command, the script will ask you to paste a group ID, a user ID or the word 'all':
 
@@ -136,6 +137,8 @@ Jasper Baes (https://www.linkedin.com/in/jasper-baes)
 
 Release version numbers: YEAR-WEEK-REV
 
+- 2024.07
+  - bugfix ([#3](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/8))
 - 2024.06
   - visual webreport
   - open JSON export as input file

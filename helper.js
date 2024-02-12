@@ -182,9 +182,9 @@ async function exportCSV(arr, filename) { // export array to CSV file in current
 }
 
 async function generateWebReport(arr) { // generates and opens a web report
-    // if --cli-only is specified, exit
+    // if --cli-only is specified, stop function
     if (scriptParameters.some(param => ['--cli-only', '-cli-only', '--clionly', '-clionly'].includes(param.toLowerCase()))) {
-        process.exit()
+        return; // stop function
     } 
 
     // host files
@@ -259,7 +259,7 @@ async function generateWebReport(arr) { // generates and opens a web report
         htmlContent += 
                 `</ul>
               </div>
-              <p class="text-center mt-5 mb-0">© <a class="color-primary font-bold text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank">Microsoft Cloud Group Analyzer</a>, made by <a class="color-accent font-bold text-decoration-none" href="https://www.linkedin.com/posts/jasper-baes_entraid-azure-activity-7157748584753319936-cqFX" target="_blank">Jasper Baes</a></p>
+              <p class="text-center mt-5 mb-0"><a class="color-primary font-bold text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank">Microsoft Cloud Group Analyzer</a>, made by <a class="color-accent font-bold text-decoration-none" href="https://www.linkedin.com/posts/jasper-baes_entraid-azure-activity-7157748584753319936-cqFX" target="_blank">Jasper Baes</a></p>
               <p class="text-center mt-1 mb-5"><a class="color-secondary" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank">https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer</a></p>
             </body>
           </html>`;
