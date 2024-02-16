@@ -16,7 +16,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Intune Windows Autopilot Deployment Profile",
             "resourceID": res.id,
             "name": res.displayName,
-            "details": `role for group '${groupName}'`
+            "detailsGroup": `group '${groupName}'`,
+            "details": ``
     }))
 }
 

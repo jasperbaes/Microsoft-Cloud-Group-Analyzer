@@ -21,7 +21,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Access Package Resource",
             "resourceID": res.id,
             "name": res.displayName,
-            "details": `group '${groupName}'`
+            "detailsGroup": `group '${groupName}'`,
+            "details": ``
     }))
 }
 

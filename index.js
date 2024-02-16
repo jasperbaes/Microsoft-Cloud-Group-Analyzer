@@ -12,14 +12,13 @@ Dependencies: axios, msal-node, fs, readline, node-cache, json-2-csv
 */
 
 // version of the tool
-global.currentVersion = '2024.05'
+global.currentVersion = '2024.07'
 
 // Declare libaries
 require('dotenv').config();
 var fs = require('fs');
 const readline = require('readline');
 const helper = require('./helper');
-let converter = require('json-2-csv');
 
 // Scope declaration. Change property 'enabled' to false to put service out of scope for the scan
 let scope = [
@@ -57,8 +56,8 @@ global.fgColor = {
 global.colorReset = "\x1b[0m"
 
 async function init(input) {
-    console.log(`\n${fgColor.FgCyan}%s${colorReset}`, ' ## MICROSOFT CLOUD GROUP ANALYZER ##');
-    console.log(` ${fgColor.FgGray}https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
+    console.log(`\n${fgColor.FgCyan} ## MICROSOFT CLOUD GROUP ANALYZER ## ${colorReset}${fgColor.FgGray}v${currentVersion}${colorReset}`);
+    console.log(` ${fgColor.FgGray}Created by Jasper Baes - https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
 
     helper.onLatestVersion()
     
@@ -74,13 +73,26 @@ async function init(input) {
     global.scriptParameters = process.argv
     let parameterID = scriptParameters.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
 
-    if (token && input == undefined && parameterID?.length <= 0) { // if this function parameter 'input' is not provided, prompt the user
-        getInput(token?.accessToken, tokenAzure?.accessToken, tenantID)
-    } else if (token && input) { // if this function parameter 'input' is provided, continue
-        handleInput(token?.accessToken, tokenAzure?.accessToken, input, tenantID)
-    } else if (token && parameterID?.length > 0) { // if this script parameter is provided, continue with the first script parameter
-        handleInput(token?.accessToken, tokenAzure?.accessToken, parameterID?.slice(0, 1), tenantID)
-    }
+    // if JSON file is specified, then open from JSON file. Else ask user input
+    try {
+        const indexO = process.argv.indexOf('-f');
+        if (indexO !== -1 && indexO < process.argv.length - 1) {
+            const parameterAfterO = process.argv[indexO + 1];
+            const fileContent = JSON.parse(fs.readFileSync(`./${parameterAfterO}`, 'utf-8'))
+            formatOutput(fileContent)
+            helper.generateWebReport(fileContent)
+        } else {
+             if (token && input == undefined && parameterID?.length <= 0) { // if this function parameter 'input' is not provided, prompt the user
+                getInput(token?.accessToken, tokenAzure?.accessToken, tenantID)
+            } else if (token && input) { // if this function parameter 'input' is provided, continue
+                handleInput(token?.accessToken, tokenAzure?.accessToken, input, tenantID)
+            } else if (token && parameterID?.length > 0) { // if this script parameter is provided, continue with the first script parameter
+                handleInput(token?.accessToken, tokenAzure?.accessToken, parameterID?.slice(0, 1), tenantID)
+            }
+        }
+    } catch (error) {
+        console.error(`ERROR: something went wrong opening JSON file`)
+    }   
 }
 
 init()
@@ -193,10 +205,11 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     if (uniqueErrorArray.length > 0) {
         console.log(`\n ${uniqueErrorArray.length} ERROR(S):`)
         console.log(' ', uniqueErrorArray)
-        console.log(' Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
+        console.log(' Error fetching above API endpoints. Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
     }
     
     formatOutput(array)
+    helper.generateWebReport(array)
 }
 
 async function formatOutput(arr) {
@@ -212,7 +225,7 @@ async function formatOutput(arr) {
         }
 
         // if the item has the property 'details', then also print that property
-        let detailString = item.details ? ` ${fgColor.FgGray}(${item.details})${colorReset}` : '';
+        let detailString = item.details ? ` ${fgColor.FgGray}(${item.detailsGroup} -- ${item.details})${colorReset}` : ` ${fgColor.FgGray}(${item.detailsGroup})${colorReset}`;
         console.log(` - ${item.name}${detailString}`);
     });
 
@@ -222,30 +235,14 @@ async function formatOutput(arr) {
     const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
     try {
         if (scriptParameters.some(param => ['--export-json', '-export-json', '--exportjson', '-exportjson'].includes(param.toLowerCase()))) {
-            await exportJSON(arr, `${today}-Cloud-Analyzer-export.json`)
+            await helper.exportJSON(arr, `${today}-Cloud-Analyzer-export.json`)
         } 
         if (scriptParameters.some(param => ['--export-csv', '-export-csv', '--exportcsv', '-exportcsv'].includes(param.toLowerCase()))) {
-            await exportCSV(arr, `${today}-Cloud-Analyzer-export.csv`)
+            await helper.exportCSV(arr, `${today}-Cloud-Analyzer-export.csv`)
         }
     } catch (error) {
         console.error(`ERROR: something went wrong exporting to JSON and/or CSV`)
     }
-}
-
-async function exportJSON(arr, filename) { // export array to JSON file  in current working directory
-    fs.writeFile(filename, JSON.stringify(arr, null, 2), 'utf-8', err => {
-        if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
-    });
-}
-
-async function exportCSV(arr, filename) { // export array to CSV file in current working directory
-    const csv = await converter.json2csv(arr);
-
-    fs.writeFile(filename, csv, err => {
-        if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
-    });
 }
 
 module.exports = { }

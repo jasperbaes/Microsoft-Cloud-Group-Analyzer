@@ -17,6 +17,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Microsoft 365 Team",
             "resourceID": result.id,
             "name": result.displayName,
+            "detailsGroup": `group '${groupName}'`,
             "details": `${result.visibility} team`
         }]
     } else {

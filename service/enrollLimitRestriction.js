@@ -17,6 +17,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Intune Enrollment Device Limit Restriction",
             "resourceID": res.id,
             "name": res.displayName,
+            "detailsGroup": `group '${groupName}'`,
+            "details": ``
     }))
 }
 

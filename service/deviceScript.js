@@ -20,7 +20,8 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "service": "Intune Device Script",
             "resourceID": res.id,
             "name": res.displayName,
-            "details": `group '${groupName}'`
+            "detailsGroup": `group '${groupName}'`,
+            "details": ``
     }))
 }
 
