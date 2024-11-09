@@ -12,7 +12,7 @@ Dependencies: axios, msal-node, fs, readline, node-cache, json-2-csv
 */
 
 // version of the tool
-global.currentVersion = '2024.07'
+global.currentVersion = '2024.45'
 
 // Declare libaries
 require('dotenv').config();
@@ -119,13 +119,13 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
         groupID = groups.map(group => group.id)
     }
 
-    // if user input is the word 'all', then add all Entra ID groups to scope of scan
+    // if user input is the word 'all', then add all Entra groups to scope of scan
     if (groupID == 'all') {
         let groups = await helper.getAllWithNextLink(accessToken, `/v1.0/groups?$select=id`)
         groupID = groups.map(group => group.id)
     }
 
-    console.log(`\n Entra ID Groups in scope of this scan:`)
+    console.log(`\n Entra Groups in scope of this scan:`)
     groupsInScope = []
 
     // Loop over all groupIDs in scope of the scan
@@ -134,7 +134,7 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
 
         // exit if the user input is invalid (not a group ID and not a user ID)
         if (groupObject == undefined && isUser == undefined) {
-            console.log(`\n ERROR: No user/group found for ID '${group}'. Make sure the ID is correct and you have the correct permissions assigned. Exiting.`)
+            console.error(` [${fgColor.FgRed}X${colorReset}] No user/group found for ID '${group}'. Make sure the ID is correct and you have the correct permissions assigned to the App Registration. Exiting.`)
             process.exit()
         } else if (groupObject != undefined) { 
             // add each group to the scope of the scan
@@ -153,7 +153,8 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
         groupsInScope.push({ groupID: isUser.id, groupName: isUser.userPrincipalName})
     }
 
-    console.log(`\n This can take a while...`)
+    console.log(`\n [${fgColor.FgGreen}✓${colorReset}] ${groupsInScope.length} Entra group(s) in scope`)
+    console.log(` [${fgColor.FgGray}i${colorReset}] Calculating Entra group assignments...`)
     calculateMemberships(accessToken, accessTokenAzure, groupsInScope, tenantID)
 }
 
@@ -164,7 +165,7 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     const progress = ((0) / groupIDarray.length) * 100; // Calculate progress percentage
     process.stdout.clearLine(); // Clear previous progress percentage
     process.stdout.cursorTo(0); // Move cursor to start of line
-    process.stdout.write(` Progress: ${progress.toFixed(2)}% (${groupIDarray.length} group(s) remaining)`); // Display progress percentage
+    process.stdout.write(` [${fgColor.FgGray}i${colorReset}] Progress: ${progress.toFixed(2)}% (${groupIDarray.length} group(s) remaining)`); // Display progress percentage
 
     // iterate over each groupID in scope
     for (let [index, group] of groupIDarray.entries()) {
@@ -183,11 +184,13 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
             const progress = ((index + 1) / groupIDarray.length) * 100; // Calculate progress percentage
             process.stdout.clearLine(); // Clear previous progress percentage
             process.stdout.cursorTo(0); // Move cursor to start of line
-            process.stdout.write(` Progress: ${progress.toFixed(2)}% (${groupIDarray.length - (index + 1)} group(s) remaining)`); // Display progress percentage
+            // process.stdout.write(` Progress: ${progress.toFixed(2)}% (${groupIDarray.length - (index + 1)} group(s) remaining)`); // Display progress percentage
+            process.stdout.write(` [${fgColor.FgGray}i${colorReset}] Progress: ${progress.toFixed(2)}% (${groupIDarray.length - (index + 1)} group(s) remaining)`); // Display progress percentage
         }
     }
 
-    console.log(`\n\n ---------------------------------------------`)
+    console.log(`\n [${fgColor.FgGreen}✓${colorReset}] Scan completed`)
+    console.log(`\n ---------------------------------------------`)
     
     // remove duplicated from this array
     const uniqueArray = array.filter((value, index, self) =>
@@ -205,7 +208,7 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     if (uniqueErrorArray.length > 0) {
         console.log(`\n ${uniqueErrorArray.length} ERROR(S):`)
         console.log(' ', uniqueErrorArray)
-        console.log(' Error fetching above API endpoints. Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)')
+        console.error(` [${fgColor.FgRed}X${colorReset}] Error fetching above API endpoints. Verify you have all required permissions (https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer#installation-and-usage)`)
     }
     
     formatOutput(array)

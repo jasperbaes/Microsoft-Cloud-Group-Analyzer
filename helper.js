@@ -13,7 +13,7 @@ try {
     global.app = express()
     global.port = 3000
 } catch (error) {
-    console.log(`\n ERROR: 'Express' module not installed. Run 'npm install'`)
+    console.log(` [${fgColor.FgRed}-${colorReset}] ERROR: 'Express' module not installed. Run 'npm install'`)
     process.exit() // exiting
 }
 
@@ -30,7 +30,7 @@ async function onLatestVersion() {
         // if latest version from Github does not match script version, display update message
         if (response.data) {
             if (latestVersion !== currentVersion) {
-                console.log(` ${fgColor.FgGray}[${fgColor.FgRed}-${fgColor.FgGray}] ${fgColor.FgRed}update available!${fgColor.FgGray} Run 'git pull' and 'npm install' to update from ${currentVersion} --> ${latestVersion}${colorReset}`)
+                console.log(` [${fgColor.FgRed}-${colorReset}] ${fgColor.FgRed}update available!${colorReset} Run 'git pull' and 'npm install' to update from ${currentVersion} --> ${latestVersion}`)
             }
         }
     } catch (error) { // no need to log anything
@@ -40,7 +40,7 @@ async function onLatestVersion() {
 async function getToken() {
     // If the client secret is filled in, then get token from the Azure App Registration
     if (global.clientSecret && global.clientSecret.length > 0) {
-        console.log(` ${fgColor.FgGray}[${fgColor.FgGreen}+${fgColor.FgGray}] authenticated with app registration${colorReset}`)
+        console.log(`\n [${fgColor.FgGray}i${colorReset}] Authenticating with App Registration...${colorReset}`)
 
         var msalConfig = {
             auth: {
@@ -60,7 +60,7 @@ async function getToken() {
             const cca = new msal.ConfidentialClientApplication(msalConfig);
             return await cca.acquireTokenByClientCredential(tokenRequest);
         } catch (error) {
-            console.error(' ERROR: error while retrieving access token from app registration. Please check the script variables and permissions!\n\n', error)
+            console.error(` [${fgColor.FgRed}X${colorReset}] Error retrieving access token from App Registration. Check the script variables in the .env file and App Registration permissions.${colorReset}\n\n`, error)
             process.exit()
         }
     } else {  // else get the token from the logged in user
@@ -71,22 +71,22 @@ async function getToken() {
             try {
                 token = await credential.getToken('https://graph.microsoft.com/.default')    
             } catch (error) {
-                console.error(`\n ERROR: seems like you're not logged in. Exiting.\n`)
+                console.error(` [${fgColor.FgRed}X${colorReset}] Could not detect a logged in user with Graph permissions. Exiting.`)
                 process.exit()
             }
             
             let user = await callApi(`https://graph.microsoft.com/v1.0/me`, token.token) // fetch logged in user
 
             if (user == undefined) { // if user not found or no permission, then exit
-                console.error('\n ERROR: error while retrieving logged in session user. Exiting.\n')
+                console.error(` [${fgColor.FgRed}X${colorReset}] Error retrieving logged in session user. Exiting.`)
                 process.exit()
             }
 
-            console.log(` ${fgColor.FgGray}[${fgColor.FgGreen}+${fgColor.FgGray}] authenticated with ${user?.userPrincipalName}${colorReset}`)
+            console.log(` [${fgColor.FgGreen}✓${colorReset}] Authenticated with ${user?.userPrincipalName}${colorReset}`)
 
             return {accessToken: token.token}
         } catch (error) {
-            console.error(' ERROR: error while retrieving access token from logged in session user. Please check the user and permissions!\n\n', error)
+            console.error(` [${fgColor.FgRed}X${colorReset}] Error retrieving access token from logged in session user. Please check the user and permissions.${colorReset}\n\n`, error)
             process.exit()
         }
     }
@@ -157,8 +157,8 @@ async function callApi(endpoint, accessToken) {
         return response.data;
     } catch (error) {
         if (error.response.status == 403) {
-        // if (error.response.status == 403 || error.response.status == 400) { // include 400 response for development
-            console.log(error.response?.data)
+        // if (error.response.status == 403 || error.response.status == 400) { // include 400 response for development purposes
+            // console.log(error.response?.data) // de-comment this for development purposes
             // process.exit()
             global.forbiddenErrors.push(`${error?.response?.status} ${error?.response?.statusText} for '${error?.response?.config?.url}'`)
         }
@@ -168,7 +168,7 @@ async function callApi(endpoint, accessToken) {
 async function exportJSON(arr, filename) { // export array to JSON file  in current working directory
     fs.writeFile(filename, JSON.stringify(arr, null, 2), 'utf-8', err => {
         if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
+        console.log(` [${fgColor.FgGreen}✓${colorReset}] File '${filename}' successfully saved in current directory`)
     });
 }
 
@@ -177,7 +177,7 @@ async function exportCSV(arr, filename) { // export array to CSV file in current
 
     fs.writeFile(filename, csv, err => {
         if (err) return console.error(` ERROR: ${err}`);
-        console.log(` File '${filename}' successfully saved in current directory`);
+        console.log(` [${fgColor.FgGreen}✓${colorReset}] File '${filename}' successfully saved in current directory`)
     });
 }
 
@@ -209,7 +209,7 @@ async function generateWebReport(arr) { // generates and opens a web report
               <div class="container mt-4 mb-5">
                 <p class="text-center"><a class="text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank"><img src="logo.png" alt="Logo" height="160"></a><p>
                 <h1 class="mb-0 text-center font-bold color-primary">Microsoft Cloud <span class="font-bold color-accent px-2 py-0">Group Analyzer</span></h1>
-                <p class="text-center mt-3 mb-5 font-bold color-secondary">Track where your Entra ID Groups are used! 💪</p>
+                <p class="text-center mt-3 mb-5 font-bold color-secondary">Track where your Entra Groups are used! 💪</p>
         `
         
         let printedServices = new Set();
@@ -267,8 +267,15 @@ async function generateWebReport(arr) { // generates and opens a web report
       });
 
     app.listen(port, async () => {
-        console.log(`\n Your web report is automatically opening on http://localhost:${port}`)
-        await require('open')(`http://localhost:${port}`);
+        console.log(` ---------------------------------------------`)
+        console.log(`\n [${fgColor.FgGreen}✓${colorReset}] Your web report is automatically opening on http://localhost:${port}`)
+
+        try {
+            await require('open')(`http://localhost:${port}`);    
+            console.log(` [${fgColor.FgGray}i${colorReset}] Use CTRL + C to exit.`)
+        } catch (error) {
+            console.error(` [${fgColor.FgRed}X${colorReset}] Error opening the web report\n\n`, error)
+        }
     })
 }
 

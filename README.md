@@ -20,20 +20,20 @@
 <br />
 
 
-Entra ID Groups are often used in multiple locations in your environment and used by multiple admins. Without continuously updating documentation or syncing with other admins, you’re all using groups blindly, potentially causing unintended security or user impact through changes in group memberships. Therefore, I've created this script.
+Entra Groups are often used in multiple locations in your environment and used by multiple admins. Without continuously updating documentation or syncing with other admins, you’re all using groups blindly, potentially causing unintended security or user impact through changes in group memberships. Therefore, I've created this script.
 
-For **Microsoft Cloud admins** who **struggle to keep track of where Entra ID groups are used**, Group Analyzer is an **opensource script** that provides **instant insights in what services/policies/... a given group or user is scoped to**.
+For **Microsoft Cloud admins** who **struggle to keep track of where Entra groups are used**, Group Analyzer is an **opensource script** that provides **instant insights in what services/policies/... a given group or user is scoped to**.
 
-<a href="./assets/mcga.png" target="_blank"><img src="./assets/mcga.png" width="100%" /></a>
+<p align="center"><a href="./assets/mcga-shared.png" target="_blank"><img src="./assets/mcga-shared.png" width="90%" /></a></p>
 Generated webreport:
 <p align="center"><a href="./assets/example-report.png" target="_blank"><img src="./assets/example-report.png" width="60%" /></a></p>
 
-Group Analyzer is an essential script for Microsoft Cloud Administrators seeking comprehensive visibility into the usage of Entra ID groups across their environment. By providing detailed insights, this tool empowers admins to:
+Group Analyzer is an essential script for Microsoft Cloud Administrators seeking comprehensive visibility into the usage of Entra groups across their environment. By providing detailed insights, this tool empowers admins to:
 
 - **Prevent Unintended Impacts:** Safeguard against inadvertent membership modifications in groups that could trigger unexpected configuration changes in various services.
 - **Enhance Group Management:** Maintain a clear overview of group assignments, ensuring efficient and informed management of your cloud environment.
-- **Save time:** Don't spend time going over all of your policies and services looking where a certain Entra ID group is used.
-- **Feel in control:** To be certain and have confirmation that you are not adding users to groups, causing unforseen impact.
+- **Save time:** Don't spend time going over all of your policies and services looking where a certain Entra group is used.
+- **Be in control:** To be certain and have confirmation that you are not adding users to groups, causing unforseen impact.
 
 Find the original post on [LinkedIn](https://www.linkedin.com/feed/update/urn:li:activity:7157748584753319936/).
 
@@ -43,7 +43,7 @@ Group Analyzer lists group memberships for following services:
 
 | Available |                     Service                      |                                                                     Description / Comment / Reason |
 | --------- | :----------------------------------------------: | -------------------------------------------------------------------------------------------------: |
-| ✅         |            Entra ID Group memberships            |                                                                                                    |
+| ✅         |            Entra Group memberships            |                                                                                                    |
 | ✅         |                  Entra ID Roles                  |                                                                                                    |
 | ✅         |         Entra ID Enterprise Applications         |                                                                                                    |
 | ✅         |            Entra ID MFA Registration             |                                                                                                    |
@@ -67,6 +67,8 @@ Group Analyzer lists group memberships for following services:
 | ❌         |                 Attack Simulator                 |                                                   Microsot Graph does not provide the target scope |
 | ❌         |            Entra ID App Registrations            |                              Entra ID App Registrations can only be scoped on users, not on groups |
 
+<!-- to check: -->
+<!-- https://graph.microsoft.com/v1.0/policies/adminConsentRequestPolicy -->
 
 ## Installation and usage
 
@@ -81,12 +83,12 @@ cd ./Microsoft-Cloud-Group-Analyzer
 npm install
 ```
 
-Create the file '.env' in the root of the folder and fill in below fields (guide above):
+Rename the .env.example file in the root of the folder to .env and fill in below fields (guide above):
 
 ```
-CLIENTSECRET=<app secret>
-TENANTID=<your tenant ID>
 CLIENTID=<app registration ID>
+TENANTID=<your tenant ID>
+CLIENTSECRET=<app secret>
 ```
 
 ## Usage
@@ -117,9 +119,9 @@ Without specifying an ID in the command, the script will ask you to paste a grou
 
 | Option            |               example                |                                                     Description |
 | ----------------- | :----------------------------------: | --------------------------------------------------------------: |
-| Entra ID Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group ID + subgroups will be in scope |
-| Entra ID User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are in scope + subgroups |
-| 'all'             |                 `all`                  |              This option will take all Entra ID groups in scope |
+| Entra Group ID | `99ccbd7e-0fc9-4545-8cf9-ee89191ed78d` |                       The given group ID + subgroups will be in scope |
+| Entra User ID  | `caf7b774-c8ab-47c3-a39e-d0a0d85d6423` | All groups where the given user is member of are in scope + subgroups |
+| 'all'             |                 `all`                  |              This option will take all Entra groups in scope |
 
 ## Web report
 
@@ -131,12 +133,14 @@ I cannot rule out the existence of current or future issues with this open-sourc
 
 ## Contact
 
-Jasper Baes (https://www.linkedin.com/in/jasper-baes)
+Jasper Baes (https://jbaes.be and https://www.linkedin.com/in/jasper-baes)
 
 ## Release history
 
-Release version numbers: YEAR-WEEK-REV
+Release version numbers: YEAR-WEEK
 
+- 2024.45
+  - Bug fixes, improved error handline, documentation updates
 - 2024.07
   - bugfix ([#3](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/8))
 - 2024.06
@@ -154,7 +158,7 @@ Release version numbers: YEAR-WEEK-REV
 
 ## Issues?
 
-I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
+I can’t promise there won’t be any issues with this open-source project, now or in the future. If you run into any issues, just let me know, and I’ll do my best to fix them.
 
 ## License
 
@@ -162,4 +166,4 @@ Please be aware that the Group Analyzer code is intended solely for individual a
 
 Thank you for respecting these usage terms and contributing to a fair and ethical software community. 
 
-Jasper Baes (https://www.linkedin.com/in/jasper-baes)
+Jasper Baes (https://jbaes.be and https://www.linkedin.com/in/jasper-baes)

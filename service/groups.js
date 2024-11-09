@@ -13,7 +13,7 @@ async function init(accessToken, accessTokenAzure, groupID, groupName, tenantID)
             "file": 'groups',
             "groupID": groupID,
             "groupName": groupName,
-            "service": "Entra ID Group",
+            "service": "Entra Group",
             "resourceID": res.id,
             "name": res.displayName,
             "detailsGroup": `Parent group of '${groupName}'`,
