@@ -6,6 +6,7 @@ const myCache = new NodeCache();
 const identity = require('@azure/identity')
 var fs = require('fs');
 let converter = require('json-2-csv');
+const path = require('path');
 
 // express
 try {
@@ -71,11 +72,12 @@ async function getToken() {
             try {
                 token = await credential.getToken('https://graph.microsoft.com/.default')    
             } catch (error) {
-                console.error(` [${fgColor.FgRed}X${colorReset}] Could not detect a logged in user with Graph permissions. Exiting.`)
+                console.error(` [${fgColor.FgRed}X${colorReset}] Could not detect a logged in user with Graph permissions or the .env file. Exiting.`)
                 process.exit()
             }
             
             let user = await callApi(`https://graph.microsoft.com/v1.0/me`, token.token) // fetch logged in user
+            debugLogger(`${await user}`)
 
             if (user == undefined) { // if user not found or no permission, then exit
                 console.error(` [${fgColor.FgRed}X${colorReset}] Error retrieving logged in session user. Exiting.`)
@@ -141,9 +143,15 @@ async function getAllWithNextLink(accessToken, urlParameter) {
 
 async function callApi(endpoint, accessToken) { 
     // if the result is already in cache, then immediately return that result
-    if (myCache.get(endpoint) != undefined) {
-        return myCache.get(endpoint)
+    try {
+        if (myCache.get(endpoint) != undefined) {
+            debugLogger(`Returning local cache result for ${endpoint}`)
+            return myCache.get(endpoint)
+        }
+    } catch (error) {
+        console.error(` [${fgColor.FgRed}X${colorReset}] Error getting local cache.${colorReset}\n\n`, error)
     }
+  
 
     const options = {
         headers: {
@@ -153,19 +161,23 @@ async function callApi(endpoint, accessToken) {
 
     try {
         const response = await axios.default.get(endpoint, options);
-        if (myCache.get(endpoint) == undefined) myCache.set(endpoint, response.data, 120); // save to cache for 120 seconds
+        if (myCache.get(endpoint) == undefined) {
+            myCache.set(endpoint, response.data, 120); // save to cache for 120 seconds
+            debugLogger(`Result of ${endpoint} added to local cache`)
+        }
         return response.data;
     } catch (error) {
         if (error.response.status == 403) {
-        // if (error.response.status == 403 || error.response.status == 400) { // include 400 response for development purposes
-            // console.log(error.response?.data) // de-comment this for development purposes
-            // process.exit()
+            debugLogger(`403 error`, error.response?.data, error)
             global.forbiddenErrors.push(`${error?.response?.status} ${error?.response?.statusText} for '${error?.response?.config?.url}'`)
+            // process.exit()
         }
+        debugLogger(`ERROR: ${endpoint} ${error}`)
     }
 };
 
 async function exportJSON(arr, filename) { // export array to JSON file  in current working directory
+    debugLogger(`Writing to ${filename}...`)
     fs.writeFile(filename, JSON.stringify(arr, null, 2), 'utf-8', err => {
         if (err) return console.error(` ERROR: ${err}`);
         console.log(` [${fgColor.FgGreen}✓${colorReset}] File '${filename}' successfully saved in current directory`)
@@ -173,6 +185,7 @@ async function exportJSON(arr, filename) { // export array to JSON file  in curr
 }
 
 async function exportCSV(arr, filename) { // export array to CSV file in current working directory
+    debugLogger(`Writing to ${filename}...`)
     const csv = await converter.json2csv(arr);
 
     fs.writeFile(filename, csv, err => {
@@ -182,10 +195,13 @@ async function exportCSV(arr, filename) { // export array to CSV file in current
 }
 
 async function generateWebReport(arr) { // generates and opens a web report
+    debugLogger(`Generating web report...`)
+
     // if --cli-only is specified, stop function
     if (scriptParameters.some(param => ['--cli-only', '-cli-only', '--clionly', '-clionly'].includes(param.toLowerCase()))) {
+        debugLogger(`Detected the '--cli-only' parameter`)
         return; // stop function
-    } 
+    }
 
     // host files
     app.get('/style.css', function(req, res) { res.sendFile(__dirname + "/assets/" + "style.css"); });
@@ -210,8 +226,18 @@ async function generateWebReport(arr) { // generates and opens a web report
                 <p class="text-center"><a class="text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank"><img src="logo.png" alt="Logo" height="160"></a><p>
                 <h1 class="mb-0 text-center font-bold color-primary">Microsoft Cloud <span class="font-bold color-accent px-2 py-0">Group Analyzer</span></h1>
                 <p class="text-center mt-3 mb-5 font-bold color-secondary">Track where your Entra Groups are used! 💪</p>
+                <p class="text-center mt-5 mb-2 font-bold color-secondary">${global.groupsInScope?.length} group(s) in scope:</p>
+                <div style="display: flex; justify-content: center">
+                    <ul>
         `
+        // list groups in scope
+        debugLogger(`Looping over each group in scope`)
+        global.groupsInScope.forEach(group => {
+            htmlContent += `<li>${group.groupName}</li>`;
+        })
         
+        htmlContent += '</ul></div> <p></p>';
+
         let printedServices = new Set();
         
         arr.sort((a, b) => {
@@ -271,6 +297,7 @@ async function generateWebReport(arr) { // generates and opens a web report
         console.log(`\n [${fgColor.FgGreen}✓${colorReset}] Your web report is automatically opening on http://localhost:${port}`)
 
         try {
+            debugLogger(`Opening web report...`)
             await require('open')(`http://localhost:${port}`);    
             console.log(` [${fgColor.FgGray}i${colorReset}] Use CTRL + C to exit.`)
         } catch (error) {
@@ -279,4 +306,14 @@ async function generateWebReport(arr) { // generates and opens a web report
     })
 }
 
-module.exports = { onLatestVersion, getToken, getTokenAzure, getAllWithNextLink, callApi, exportJSON, exportCSV, generateWebReport }
+async function debugLogger(text) { 
+    if (global.debugMode) {
+        const logMessage = ` [${fgColor.FgGray}i${colorReset}] ${text}`;
+        console.log(logMessage);
+        fs.appendFile(global.logFilePath, `${logMessage}\n`, err => { 
+            if (err) console.error(`Failed to write to log file: ${err.message}`); 
+        });
+    }
+}
+
+module.exports = { onLatestVersion, getToken, getTokenAzure, getAllWithNextLink, callApi, exportJSON, exportCSV, generateWebReport, debugLogger }

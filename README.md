@@ -61,11 +61,10 @@ Group Analyzer lists group memberships for following services:
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
 | ✅         |               Azure Subscriptions                |                                                                                                    |
 | ✅         |                  Access Package                  |                                                                                                    |
-| ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon (Only for Microsoft Authenticator app) |
+| ❌         | Entra ID Authentication Methods feature settings |                                                 Coming soon  |
 | ❌         |           Entra ID Administrative Unit           |                                                                                        Coming soon |
 | ❌         |              Entra ID Cross Tenant               |                                                                                        Coming soon |
-| ❌         |                 Attack Simulator                 |                                                   Microsot Graph does not provide the target scope |
-| ❌         |            Entra ID App Registrations            |                              Entra ID App Registrations can only be scoped on users, not on groups |
+| ❌         |            Entra ID App Registrations            |                              Coming soon |
 
 <!-- to check: -->
 <!-- https://graph.microsoft.com/v1.0/policies/adminConsentRequestPolicy -->
@@ -96,15 +95,28 @@ CLIENTSECRET=<app secret>
 Examples:
 
 ```sh
-node index.js
-node index.js xxxx-xxxx-xxxx-xxxx
+node index.js <user ID>
+node index.js <group ID>
+node index.js all
+```
+
+Export examples:
+```sh
 node index.js xxxx-xxxx-xxxx-xxxx --export-json
 node index.js xxxx-xxxx-xxxx-xxxx --export-csv
 node index.js xxxx-xxxx-xxxx-xxxx --export-json --export-csv
-node index.js all --export-json --export-csv
+```
+
+Import example:
+```sh
 node index.js all -f Cloud-Analyzer-export.json
+```
+
+CLI-only, skip, limit and debug parameter:
+```sh
 node index.js xxxx-xxxx-xxxx-xxxx --export-json --cli-only
-node index.js xxxx-xxxx-xxxx-xxxx --cli-only
+node index.js xxxx-xxxx-xxxx-xxxx --skip 10 --limit 5
+node index.js xxxx-xxxx-xxxx-xxxx --debug
 ```
 
 | Parameter           |               Description |
@@ -114,6 +126,9 @@ node index.js xxxx-xxxx-xxxx-xxxx --cli-only
 | `--export-csv` | This parameter will export the results to JSON in a file in the current directory. This parameter is optional and can be used with any other parameter. |
 | `-f` | This parameter specifies an import JSON file. Format needs to be the same as the JSON exported with the parameter --export-json. This parameter is optional and can be used with any other parameter. |
 | `--cli-only` | With this parameter, the web report will not be generated or opened. This parameter is optional and can be used with any other parameter. |
+| `-s` or `--skip` | Limits the number of groups in scope. |
+| `-l` or `--limit` | Limits the number of groups in scope. |
+| `-d` or `--debug` | Debug output and log file. |
 
 Without specifying an ID in the command, the script will ask you to paste a group ID, a user ID or the word 'all':
 
@@ -139,10 +154,13 @@ Jasper Baes (https://jbaes.be and https://www.linkedin.com/in/jasper-baes)
 
 Release version numbers: YEAR-WEEK
 
+- 2024.48
+  - add skip, limit and debug parameter ([#12](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/12))
+  - Report improvements
 - 2024.45
   - Bug fixes, improved error handline, documentation updates
 - 2024.07
-  - bugfix ([#3](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/8))
+  - bugfix ([#8](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/8))
 - 2024.06
   - visual webreport
   - open JSON export as input file

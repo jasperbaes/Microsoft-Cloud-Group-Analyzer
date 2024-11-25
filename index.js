@@ -12,13 +12,14 @@ Dependencies: axios, msal-node, fs, readline, node-cache, json-2-csv
 */
 
 // version of the tool
-global.currentVersion = '2024.45'
+global.currentVersion = '2024.48'
 
 // Declare libaries
 require('dotenv').config();
 var fs = require('fs');
 const readline = require('readline');
 const helper = require('./helper');
+const path = require('path');
 
 // Scope declaration. Change property 'enabled' to false to put service out of scope for the scan
 let scope = [
@@ -54,12 +55,30 @@ global.fgColor = {
 }
 
 global.colorReset = "\x1b[0m"
+global.groupsInScope = []
+global.debugMode = false
+global.logFilePath = ''
 
 async function init(input) {
     console.log(`\n${fgColor.FgCyan} ## MICROSOFT CLOUD GROUP ANALYZER ## ${colorReset}${fgColor.FgGray}v${currentVersion}${colorReset}`);
     console.log(` ${fgColor.FgGray}Created by Jasper Baes - https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer${colorReset}`)
 
     helper.onLatestVersion()
+
+    // get script arguments
+    global.scriptParameters = process.argv
+    let parameterID = scriptParameters.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
+
+    //  debug mode
+    const debugParameter = scriptParameters.findIndex(param => ['-d', '--debug'].includes(param.toLowerCase()));
+    if (debugParameter !== -1) {
+        helper.debugLogger(`Enabeling debug mode...`);
+        global.debugMode = true;
+        
+        // Create a log file with the current datetime in the filename
+        helper.debugLogger(`Creating log file...`);
+        global.logFilePath = path.join(process.cwd(), `debug-log-${new Date().toISOString().replace(/[:.]/g, '-')}.txt`);
+    }
     
     // set global variables
     global.tenantID = process.env.TENANTID
@@ -67,18 +86,19 @@ async function init(input) {
     global.clientID = process.env.CLIENTID
 
     let token = await helper.getToken() // get access token from Microsoft Graph API
+    helper.debugLogger(JSON.stringify(token))
     let tokenAzure = await helper.getTokenAzure() // get access token from Azure Service Management API
-    
-    // get script arguments
-    global.scriptParameters = process.argv
-    let parameterID = scriptParameters.slice(2); // get the third script parameter: node index.js xxxx-xxxx-xxxx-xxxx
+    helper.debugLogger(JSON.stringify(tokenAzure))
 
     // if JSON file is specified, then open from JSON file. Else ask user input
     try {
         const indexO = process.argv.indexOf('-f');
         if (indexO !== -1 && indexO < process.argv.length - 1) {
+            helper.debugLogger(`Detected the -f parameter`);
             const parameterAfterO = process.argv[indexO + 1];
+            helper.debugLogger(`Reading file ${parameterAfterO}`);
             const fileContent = JSON.parse(fs.readFileSync(`./${parameterAfterO}`, 'utf-8'))
+            helper.debugLogger(`Formatting the file...`);
             formatOutput(fileContent)
             helper.generateWebReport(fileContent)
         } else {
@@ -105,6 +125,7 @@ async function getInput(accessToken, accessTokenAzure, tenantID) {
     });
 
     // Get input 'groupID' from the user via terminal
+    helper.debugLogger(`Asking user input`)
     rl.question(`\n Enter a group ID, a user ID or 'all': `, async (userInput) => {
         rl.close();
         handleInput(accessToken, accessTokenAzure, [userInput], tenantID)
@@ -113,23 +134,26 @@ async function getInput(accessToken, accessTokenAzure, tenantID) {
 
 async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
     // if user input is a userID, then add groups where user is member of to scope of the scan
+    helper.debugLogger(`Fetching the user ID and UPN...`)
     let isUser = await helper.callApi(`https://graph.microsoft.com/v1.0/users/${groupID[0]}?$select=id,userPrincipalName`, accessToken)
     if (isUser != undefined) {
+        helper.debugLogger(`Fetching the groups of this user...`)
         let groups = await helper.getAllWithNextLink(accessToken, `/v1.0/users/${groupID}/memberOf?$select=id`)
         groupID = groups.map(group => group.id)
     }
 
     // if user input is the word 'all', then add all Entra groups to scope of scan
     if (groupID == 'all') {
+        helper.debugLogger(`Fetching all groups...`)
         let groups = await helper.getAllWithNextLink(accessToken, `/v1.0/groups?$select=id`)
         groupID = groups.map(group => group.id)
     }
 
     console.log(`\n Entra Groups in scope of this scan:`)
-    groupsInScope = []
 
     // Loop over all groupIDs in scope of the scan
     for (let group of groupID) {
+        helper.debugLogger(`Fetching group ID and group name...`)
         let groupObject = await helper.callApi(`https://graph.microsoft.com/v1.0/groups/${group}?$select=id,displayName`, accessToken)
 
         // exit if the user input is invalid (not a group ID and not a user ID)
@@ -139,23 +163,44 @@ async function handleInput(accessToken, accessTokenAzure, groupID, tenantID) {
         } else if (groupObject != undefined) { 
             // add each group to the scope of the scan
             console.log(` - '${groupObject.displayName}'`)
-            groupsInScope.push({ groupID: groupObject.id, groupName: groupObject.displayName})
+            helper.debugLogger(`Adding group to scope...`)
+            global.groupsInScope.push({ groupID: groupObject.id, groupName: groupObject.displayName})
 
             // if any, add subgroups to the scope of the scan
             let memberOfOtherGroups = await require(`./service/groups`).init(accessToken, group, tenantID)
             memberOfOtherGroups.forEach(group => console.log(` - '${group.name}' ${fgColor.FgGray}(parent of '${groupObject.displayName}')${colorReset}`))
-            groupsInScope.push(...memberOfOtherGroups.map(x => ({ groupID: x.resourceID, groupName: x.name}) ))
+            global.groupsInScope.push(...memberOfOtherGroups.map(x => ({ groupID: x.resourceID, groupName: x.name}) ))
         }
     }
     
     // if input was a user ID, then also add that userID. This is required for the service 'azureResource'
     if (isUser != undefined) {
-        groupsInScope.push({ groupID: isUser.id, groupName: isUser.userPrincipalName})
+        helper.debugLogger(`Adding user ID to the scope (used for Azure resources)`)
+        global.groupsInScope.push({ groupID: isUser.id, groupName: isUser.userPrincipalName})
     }
 
-    console.log(`\n [${fgColor.FgGreen}✓${colorReset}] ${groupsInScope.length} Entra group(s) in scope`)
+    console.log(`\n [${fgColor.FgGreen}✓${colorReset}] ${global.groupsInScope.length} Entra group(s) in scope`)
+
+    // skip parameter
+    const skipIndex = scriptParameters.findIndex(param => ['-s', '--skip'].includes(param.toLowerCase()));
+    if (skipIndex !== -1 && skipIndex + 1 < scriptParameters.length) {
+        const skipValue = scriptParameters[skipIndex + 1];
+        helper.debugLogger(`Skiping scope with ${skipValue} groups...`)
+        global.groupsInScope = global.groupsInScope.slice(skipValue)
+        console.log(` [${fgColor.FgGreen}✓${colorReset}] Skipping scope with ${skipValue} group(s)`);
+    }
+
+    // limit parameter
+    const limitIndex = scriptParameters.findIndex(param => ['-l', '--limit'].includes(param.toLowerCase()));
+    if (limitIndex !== -1 && limitIndex + 1 < scriptParameters.length) {
+        const limitValue = scriptParameters[limitIndex + 1];
+        helper.debugLogger(`Limiting scope to first ${limitValue} groups...`)
+        global.groupsInScope = global.groupsInScope.slice(0, limitValue)
+        console.log(` [${fgColor.FgGreen}✓${colorReset}] Limiting scope to first ${limitValue} group(s)`);
+    }
+
     console.log(` [${fgColor.FgGray}i${colorReset}] Calculating Entra group assignments...`)
-    calculateMemberships(accessToken, accessTokenAzure, groupsInScope, tenantID)
+    calculateMemberships(accessToken, accessTokenAzure, global.groupsInScope, tenantID)
 }
 
 async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray, tenantID) {
@@ -193,6 +238,7 @@ async function calculateMemberships(accessToken, accessTokenAzure, groupIDarray,
     console.log(`\n ---------------------------------------------`)
     
     // remove duplicated from this array
+    helper.debugLogger(`Filtering for unique results only...`)
     const uniqueArray = array.filter((value, index, self) =>
         index === self.findIndex((t) => (
             t.file === value.file &&
