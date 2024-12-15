@@ -226,10 +226,16 @@ async function generateWebReport(arr) { // generates and opens a web report
                 <p class="text-center"><a class="text-decoration-none" href="https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer" target="_blank"><img src="logo.png" alt="Logo" height="160"></a><p>
                 <h1 class="mb-0 text-center font-bold color-primary">Microsoft Cloud <span class="font-bold color-accent px-2 py-0">Group Analyzer</span></h1>
                 <p class="text-center mt-3 mb-5 font-bold color-secondary">Track where your Entra Groups are used! 💪</p>
-                <p class="text-center mt-5 mb-2 font-bold color-secondary">${global.groupsInScope?.length} group(s) in scope:</p>
-                <div style="display: flex; justify-content: center">
-                    <ul>
         `
+
+        if (global.groupsInScope?.length > 0) {
+            htmlContent += `
+                <p class="text-center mt-5 mb-2 font-bold color-secondary">${global.groupsInScope?.length} group(s) in scope:</p>
+            `
+        }
+
+        htmlContent += `<div style="display: flex; justify-content: center"> <ul>`
+
         // list groups in scope
         debugLogger(`Looping over each group in scope`)
         global.groupsInScope.forEach(group => {

@@ -154,11 +154,13 @@ Jasper Baes (https://jbaes.be and https://www.linkedin.com/in/jasper-baes)
 
 Release version numbers: YEAR-WEEK
 
+- 2024.50
+  - 8x faster (local caching + processing in batches of 10)
 - 2024.48
   - add skip, limit and debug parameter ([#12](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/12))
-  - Report improvements
+  - report improvements
 - 2024.45
-  - Bug fixes, improved error handline, documentation updates
+  - bug fixes, improved error handline, documentation updates
 - 2024.07
   - bugfix ([#8](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/8))
 - 2024.06
