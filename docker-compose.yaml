@@ -1,0 +1,19 @@
+services:
+  analyzer_az_cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "~/.azure:/app/azure"
+    environment:
+      AZURE_CONFIG_DIR: /app/azure
+
+  analyzer_app_registration:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      AZURE_CONFIG_DIR: /app/azure
+      CLIENT_ID: ${CLIENT_ID:-error}
+      CLIENT_SECRET: ${CLIENT_SECRET:-error}
+      TENANT_ID: ${TENANT_ID:-error}

@@ -142,6 +142,31 @@ Without specifying an ID in the command, the script will ask you to paste a grou
 
 Automatically, a visual web report will be generated and opened in your default browser. To save the report as a PDF file, use the shortcut Ctrl + P. To skip the web report and use the command line interface only, include the `--cli-only` parameter.
 
+## Alternative installation using Docker
+
+### Clone repository
+
+```sh
+git clone https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer.git
+cd ./Microsoft-Cloud-Group-Analyzer
+```
+
+### Run with Azure CLI credentials
+If you have installed `az` command, you can use:
+
+```sh
+# run in Microsoft-Cloud-Group-Analyzer directory
+docker compose run --it analyzer_az_cli
+```
+
+### Run with Application registration
+See instructions for application registration above, create same `.env` and then run:
+```sh
+# run in Microsoft-Cloud-Group-Analyzer directory
+docker compose run --it analyzer_app_registration
+```
+
+
 ## Issues?
 
 I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
