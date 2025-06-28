@@ -142,9 +142,23 @@ Without specifying an ID in the command, the script will ask you to paste a grou
 
 Automatically, a visual web report will be generated and opened in your default browser. To save the report as a PDF file, use the shortcut Ctrl + P. To skip the web report and use the command line interface only, include the `--cli-only` parameter.
 
-## Issues?
+## Issues
 
-I cannot rule out the existence of current or future issues with this open-source project. These may be related to hard-coded elements or the Microsoft 365 API used. If there are any issues, please feel free to report them. I will see what I can do to resolve them.
+We strive to maintain the functionality and reliability of this project. However, some issues may arise, particularly due to changes in external dependencies such as the Microsoft 365 or Azure APIs. These changes can sometimes introduce unexpected behavior or breaking changes in our application.
+
+### How to Report Issues
+If you encounter any problems, please help us by reporting them in the following manner:
+
+1. **Search Existing Issues:** Before submitting a new issue, please check if it has already been reported or addressed. You can find existing issues in the [Issues section](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues) of our GitHub repository.
+
+2. **Create a New Issue:** If the issue hasn't been reported, you can [create a new issue](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/issues/new) by providing the following details:
+   - A descriptive title of the issue.
+   - A detailed description of the problem.
+   - Steps to reproduce the issue, including any relevant code snippets.
+   - The environment details: operating system, browser, and version used.
+   - Any error messages or logs that were observed.
+
+We are committed to addressing reported issues as efficiently as possible. Your feedback and contributions are invaluable in helping us maintain and improve this project. Thank you for your support and collaboration!
 
 ## Contact
 
@@ -175,10 +189,6 @@ Release version numbers: YEAR-WEEK
   - added version checker
 - 2024.04
   - initial release
-
-## Issues?
-
-I can’t promise there won’t be any issues with this open-source project, now or in the future. If you run into any issues, just let me know, and I’ll do my best to fix them.
 
 ## License
 
