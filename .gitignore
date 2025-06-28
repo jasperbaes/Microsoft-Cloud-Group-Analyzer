@@ -1,2 +1,11 @@
+# dotenv environment variables
 .env
+
+# Installed modules
 node_modules
+
+# Logs
+npm-debug.log*
+
+# MacOS files
+**/.DS_Store
