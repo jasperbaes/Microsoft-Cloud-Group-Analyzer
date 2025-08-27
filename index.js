@@ -35,6 +35,7 @@ let scope = [
     { file: 'deviceScript',  bgColor: '\x1b[41m', enabled: true},
     { file: 'appConfigurationPolicies', bgColor: '\x1b[41m', enabled: true},
     { file: 'appProtectionPolicy', bgColor: '\x1b[41m', enabled: true},
+    { file: 'appAssignments', bgColor: '\x1b[41m', enabled: true},
     { file: 'windowsAutopilotDeploymentProfile', bgColor: '\x1b[41m', enabled: true},
     { file: 'mfaRegistration', bgColor: '\x1b[41m', enabled: true},
     { file: 'authenticationMethods', bgColor: '\x1b[41m', enabled: true},
