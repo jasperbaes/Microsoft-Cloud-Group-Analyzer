@@ -56,6 +56,7 @@ Group Analyzer lists group memberships for following services:
 | ✅         |              Intune Device Scripts               |                                                                                                    |
 | ✅         |          Intune App Protection Policies          |                                                                                                    |
 | ✅         |        Intune App Configuration Policies         |                                                                                                    |
+| ✅         |              Intune App Assignments              |                                                                                                    |
 | ✅         |       Intune Autopilot Deployment Profiles       |                                                                                                    |
 | ✅         |               Microsoft 365 Teams                |                                                                                                    |
 | ✅         |                 Azure Resources                  | If the input is a User ID, the resources where that specific user is assigned to are also reported |
