@@ -170,7 +170,8 @@ Jasper Baes (https://jbaes.be and https://www.linkedin.com/in/jasper-baes)
 Release version numbers: YEAR-WEEK
 
 - 2025.36
-  - added Intune App Assignments ([#20](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/pull/20) by [@davejlong](https://github.com/davejlong))
+  - updated added Intune App Assignments ([#20](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/pull/20) by [@davejlong](https://github.com/davejlong))
+  - helper.js error handling fixed, package-lock and .gitignore updated ([#17](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/pull/17) and [#18](https://github.com/jasperbaes/Microsoft-Cloud-Group-Analyzer/pull/18) by [SamPlaysKeys](https://github.com/SamPlaysKeys))
 - 2024.50
   - 8x faster (local caching + processing in batches of 10)
 - 2024.48
